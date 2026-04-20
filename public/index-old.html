@@ -1,0 +1,2094 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bread Calculator - Baker's Math</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 20px 15px;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            header p {
+                font-size: 0.95em;
+            }
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                padding: 15px;
+                gap: 20px;
+            }
+        }
+
+        .section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        @media (max-width: 768px) {
+            .section {
+                padding: 15px;
+            }
+        }
+
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .ingredient-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr auto;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: end;
+        }
+
+        .ingredient-row input,
+        .ingredient-row select {
+            margin-bottom: 0;
+        }
+
+        @media (max-width: 768px) {
+            .ingredient-row {
+                grid-template-columns: 1fr;
+                gap: 8px;
+                padding: 10px;
+                background: white;
+                border-radius: 6px;
+                margin-bottom: 12px;
+            }
+
+            .ingredient-row input,
+            .ingredient-row select {
+                width: 100%;
+            }
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: background 0.3s, transform 0.1s;
+        }
+
+        button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 0.9em;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .btn-success {
+            background: #28a745;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .results-table th,
+        .results-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        @media (max-width: 768px) {
+            .results-table {
+                font-size: 0.85em;
+            }
+
+            .results-table th,
+            .results-table td {
+                padding: 8px 6px;
+            }
+
+            .results-table th:nth-child(3),
+            .results-table td:nth-child(3) {
+                display: none;
+            }
+        }
+
+        .results-table th {
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+
+        .results-table tr:hover {
+            background: #f0f0f0;
+        }
+
+        .summary {
+            background: #e7f3ff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        @media (max-width: 768px) {
+            .summary-item {
+                font-size: 1em;
+                flex-wrap: wrap;
+            }
+        }
+
+        .summary-item strong {
+            color: #667eea;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 768px) {
+            .button-group {
+                flex-direction: column;
+            }
+
+            .button-group button {
+                width: 100%;
+            }
+        }
+
+        .info-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .info-box h3 {
+            color: #856404;
+            margin-bottom: 8px;
+        }
+
+        .info-box p {
+            color: #856404;
+            line-height: 1.5;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            animation: slideDown 0.3s;
+        }
+
+        @media (max-width: 768px) {
+            .modal-content {
+                width: 95%;
+                margin: 2% auto;
+                max-height: 95vh;
+                border-radius: 8px;
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 25px;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.5em;
+        }
+
+        .close {
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+            transition: transform 0.2s;
+        }
+
+        .close:hover {
+            transform: scale(1.2);
+        }
+
+        .modal-body {
+            padding: 25px;
+        }
+
+        .modal-footer {
+            padding: 20px 25px;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .modal-row {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+            align-items: start;
+        }
+
+        .modal-row label {
+            padding-top: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .modal-row {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            .modal-row label {
+                padding-top: 0;
+            }
+        }
+
+        .weight-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .weight-option input[type="radio"] {
+            width: auto;
+        }
+
+        .weight-option input[type="number"] {
+            flex: 1;
+        }
+
+        select option[disabled] {
+            color: #999;
+        }
+
+        .dynamic-field {
+            display: none;
+        }
+
+        .btn-small-inline {
+            padding: 6px 12px;
+            font-size: 0.85em;
+            margin-left: 8px;
+        }
+
+        /* Saved Recipes Styles */
+        .saved-recipe-item {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        @media (max-width: 768px) {
+            .saved-recipe-item {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
+
+            .saved-recipe-actions {
+                justify-content: stretch;
+            }
+
+            .saved-recipe-actions button {
+                flex: 1;
+            }
+        }
+
+        .saved-recipe-item:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+
+        .saved-recipe-info {
+            flex: 1;
+        }
+
+        .saved-recipe-name {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .saved-recipe-meta {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .saved-recipe-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .recipes-list-container {
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .export-import-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        /* Static ingredient display */
+        .ingredient-item {
+            background: white;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s;
+            font-family: 'Courier New', monospace;
+        }
+
+        .ingredient-item:hover {
+            border-color: #667eea;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
+        }
+
+        .ingredient-text {
+            flex: 1;
+            font-size: 1.05em;
+            color: #333;
+            user-select: all;
+            cursor: text;
+        }
+
+        .ingredient-weight {
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .ingredient-name {
+            color: #333;
+            margin: 0 8px;
+        }
+
+        .ingredient-percentage {
+            color: #666;
+            font-style: italic;
+        }
+
+        .ingredient-meta {
+            color: #999;
+            font-size: 0.9em;
+            margin-left: 8px;
+        }
+
+        .ingredient-actions {
+            display: flex;
+            gap: 6px;
+            margin-left: 15px;
+        }
+
+        .btn-icon {
+            padding: 6px 10px;
+            font-size: 1.1em;
+            min-width: auto;
+            background: transparent;
+            border: 1px solid #ddd;
+            color: #667eea;
+        }
+
+        .btn-icon:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .btn-icon.btn-danger {
+            color: #dc3545;
+        }
+
+        .btn-icon.btn-danger:hover {
+            background: #dc3545;
+            color: white;
+            border-color: #dc3545;
+        }
+
+        @media (max-width: 768px) {
+            .ingredient-item {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+                padding: 10px;
+            }
+
+            .ingredient-text {
+                font-size: 0.95em;
+            }
+
+            .ingredient-actions {
+                margin-left: 0;
+                justify-content: stretch;
+            }
+
+            .ingredient-actions button {
+                flex: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .export-import-buttons {
+                flex-direction: column;
+            }
+
+            .export-import-buttons button {
+                width: 100%;
+            }
+
+            .modal-header h2 {
+                font-size: 1.2em;
+            }
+
+            .modal-body {
+                padding: 15px;
+            }
+
+            .modal-footer {
+                padding: 15px;
+                flex-wrap: wrap;
+            }
+
+            .modal-footer button {
+                flex: 1;
+                min-width: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🍞 Bread Calculator</h1>
+            <p>Professional Baker's Math Tool - Calculate percentages, hydration, and scale your recipes</p>
+        </header>
+
+        <div class="main-content">
+            <!-- Recipe Settings -->
+            <div class="section">
+                <h2>Recipe Settings</h2>
+                <div class="input-group">
+                    <label for="recipeName">Recipe Name</label>
+                    <input type="text" id="recipeName" placeholder="My Sourdough" value="Multi Grain Bread">
+                </div>
+                <div class="input-group">
+                    <label for="totalWeight">Total Dough Weight (g)</label>
+                    <input type="number" id="totalWeight" placeholder="1000" value="2000">
+                </div>
+                <div class="input-group">
+                    <label for="numLoaves">Number of Loaves</label>
+                    <input type="number" id="numLoaves" placeholder="2" value="2" min="1">
+                </div>
+            </div>
+
+            <!-- Quick Info -->
+            <div class="section">
+                <h2>Baker's Math Guide</h2>
+                <div class="info-box">
+                    <h3>How It Works</h3>
+                    <p><strong>Baker's Percentage:</strong> All ingredients are expressed as a percentage of the total flour weight (which is always 100%).</p>
+                    <p style="margin-top: 10px;"><strong>Hydration:</strong> Total water / Total flour × 100%</p>
+                </div>
+            </div>
+
+            <!-- Ingredients -->
+            <div class="section full-width">
+                <h2>Ingredients</h2>
+                <div id="ingredientsContainer">
+                    <!-- Ingredients will be added here dynamically -->
+                </div>
+                <div class="button-group">
+                    <button onclick="addIngredient()" class="btn-success">+ Add Ingredient</button>
+                    <button onclick="openScaleAllModal()">⚖️ Scale All</button>
+                    <button onclick="calculate()">Calculate</button>
+                    <button onclick="saveRecipe()">💾 Save Recipe</button>
+                    <button onclick="openLoadRecipeModal()">📂 Load Recipe</button>
+                    <button onclick="shareRecipe()">🔗 Share</button>
+                    <button onclick="resetRecipe()" class="btn-danger">Reset</button>
+                </div>
+            </div>
+
+            <!-- Results -->
+            <div class="section full-width">
+                <h2>Results</h2>
+                <div id="results"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Version: 2026-02-10-v4
+        alert('JavaScript is running!');
+        console.log('Script loaded - version 4');
+        let ingredients = [];
+        
+        // Immediately set default ingredients
+        ingredients = [
+            { name: 'Bread Flour', weight: 450, type: 'flour' },
+            { name: 'Whole Wheat Flour', weight: 250, type: 'flour' },
+            { name: 'Barley Flour', weight: 100, type: 'flour' },
+            { name: 'Water', weight: 650, type: 'fluid' },
+            { name: 'Starter (80% hydration)', weight: 200, type: 'starter', hydration: 80, includeFlour: true },
+            { name: 'Salt', weight: 18, type: 'salt' },
+            { name: 'Seeds Mix', weight: 140, type: 'extra' }
+        ];
+        console.log('Default ingredients set:', ingredients.length);
+        alert('Default ingredients set: ' + ingredients.length);
+
+        // Ingredient types
+        const ingredientTypes = {
+            'flour': 'Flour',
+            'fluid': 'Fluid',
+            'starter': 'Starter',
+            'salt': 'Salt',
+            'yeast': 'Yeast',
+            'fat': 'Fat',
+            'sugar': 'Sugar',
+            'dairy': 'Dairy',
+            'egg': 'Egg',
+            'misc': 'Miscellaneous',
+            'extra': 'Other extras'
+        };
+
+        // Initialize with default recipe
+        function initializeDefaultRecipe() {
+            console.log('Initializing default recipe...');
+            ingredients = [
+                { name: 'Bread Flour', weight: 450, type: 'flour' },
+                { name: 'Whole Wheat Flour', weight: 250, type: 'flour' },
+                { name: 'Barley Flour', weight: 100, type: 'flour' },
+                { name: 'Water', weight: 650, type: 'fluid' },
+                { name: 'Starter (80% hydration)', weight: 200, type: 'starter', hydration: 80, includeFlour: true },
+                { name: 'Salt', weight: 18, type: 'salt' },
+                { name: 'Seeds Mix', weight: 140, type: 'extra' }
+            ];
+            console.log('Ingredients set:', ingredients);
+            renderIngredients();
+            calculate();
+            console.log('Default recipe initialized');
+        }
+        
+        // Call it immediately on script load
+        if (typeof window !== 'undefined') {
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', () => {
+                    console.log('DOM loaded, rendering ingredients...');
+                    renderIngredients();
+                    calculate();
+                });
+            } else {
+                // DOM already loaded
+                console.log('DOM already ready, rendering ingredients...');
+                renderIngredients();
+                calculate();
+            }
+        }
+
+        // Modal functions
+        function openAddIngredientModal() {
+            document.getElementById('addIngredientModal').style.display = 'block';
+            resetModalForm();
+        }
+
+        function closeAddIngredientModal() {
+            document.getElementById('addIngredientModal').style.display = 'none';
+        }
+
+        function resetModalForm() {
+            document.getElementById('ingredientWeightRadio').checked = true;
+            document.getElementById('ingredientWeight').value = '';
+            document.getElementById('ingredientWeight').disabled = false;
+            document.getElementById('ingredientPercentage').value = '';
+            document.getElementById('ingredientPercentage').disabled = true;
+            document.getElementById('ingredientName').value = '';
+            document.getElementById('ingredientType').value = 'none';
+            document.getElementById('ingredientHydration').value = '100';
+            document.getElementById('ingredientIncludeFlour').checked = true;
+            hideAllDynamicFields();
+        }
+
+        function hideAllDynamicFields() {
+            document.querySelectorAll('.dynamic-field').forEach(el => el.style.display = 'none');
+        }
+
+        function onWeightTypeChange(type) {
+            const weightInput = document.getElementById('ingredientWeight');
+            const percentageInput = document.getElementById('ingredientPercentage');
+            
+            if (type === 'weight') {
+                weightInput.disabled = false;
+                percentageInput.disabled = true;
+            } else {
+                weightInput.disabled = true;
+                percentageInput.disabled = false;
+            }
+        }
+
+        function onIngredientTypeChange() {
+            const type = document.getElementById('ingredientType').value;
+            hideAllDynamicFields();
+
+            // Show relevant fields based on type
+            if (type === 'starter') {
+                document.getElementById('starterFields').style.display = 'block';
+            } else if (type === 'dairy') {
+                document.getElementById('dairyFields').style.display = 'block';
+                onDairyPresetChange();
+            } else if (type === 'egg') {
+                document.getElementById('eggFields').style.display = 'block';
+            } else if (type === 'misc') {
+                document.getElementById('miscFields').style.display = 'block';
+            } else if (type === 'sugar') {
+                document.getElementById('sugarFields').style.display = 'block';
+                onSugarPresetChange();
+            }
+
+            // Show percentage option for flour types
+            const percentageGroup = document.getElementById('percentageGroup');
+            if (type === 'flour' || type === 'fluid' || type === 'starter' || type === 'salt' || type === 'yeast' || type === 'fat' || type === 'sugar') {
+                percentageGroup.style.display = 'block';
+            } else {
+                percentageGroup.style.display = 'none';
+            }
+        }
+
+        function onDairyPresetChange() {
+            const preset = document.getElementById('dairyPreset').value;
+            const dairyPresets = {
+                '0': { protein: 3.4, fat: 0.1, carbs: 5, sugars: 5, ash: 0.7, salt: 0, hydration: 90.8 },
+                '1': { protein: 3.4, fat: 0.3, carbs: 4.8, sugars: 4.8, ash: 0.7, salt: 0, hydration: 90.8 },
+                '2': { protein: 3.3, fat: 0.5, carbs: 4.9, sugars: 4.9, ash: 0.7, salt: 0, hydration: 90.6 },
+                '3': { protein: 3.4, fat: 1, carbs: 4.8, sugars: 4.8, ash: 0.7, salt: 0, hydration: 90.1 },
+                '15': { protein: 3.3, fat: 2, carbs: 4.8, sugars: 4.8, ash: 0.7, salt: 0, hydration: 89.2 },
+                '4': { protein: 3.2, fat: 3.5, carbs: 4.8, sugars: 4.8, ash: 0.7, salt: 0, hydration: 87.8 },
+                '5': { protein: 2.8, fat: 9, carbs: 4.3, sugars: 4.3, ash: 0.6, salt: 0, hydration: 83.3 },
+                '6': { protein: 2.7, fat: 12, carbs: 4.1, sugars: 4.1, ash: 0.6, salt: 0, hydration: 80.6 },
+                '7': { protein: 2.3, fat: 20, carbs: 3.4, sugars: 3.4, ash: 0.5, salt: 0, hydration: 73.8 },
+                '8': { protein: 2.1, fat: 33, carbs: 3.1, sugars: 3.1, ash: 0.5, salt: 0, hydration: 61.3 },
+                '9': { protein: 2, fat: 38, carbs: 2.9, sugars: 2.9, ash: 0.4, salt: 0, hydration: 56.7 },
+                '10': { protein: 1.7, fat: 50, carbs: 2.8, sugars: 2.8, ash: 0.4, salt: 0, hydration: 45.1 },
+                '11': { protein: 4.3, fat: 3.6, carbs: 5, sugars: 5, ash: 0.7, salt: 0, hydration: 86.4 },
+                '12': { protein: 4.3, fat: 0.1, carbs: 5.7, sugars: 5.7, ash: 0.8, salt: 0, hydration: 89.1 },
+                '13': { protein: 0.6, fat: 81, carbs: 0.7, sugars: 0.7, ash: 3.5, salt: 1.5, hydration: 14.2 },
+                '14': { protein: 0.9, fat: 82, carbs: 0.1, sugars: 0.1, ash: 2, salt: 0, hydration: 15 },
+            };
+
+            if (preset !== '-1' && dairyPresets[preset]) {
+                const values = dairyPresets[preset];
+                document.getElementById('dairyProtein').value = values.protein;
+                document.getElementById('dairyFat').value = values.fat;
+                document.getElementById('dairyCarbs').value = values.carbs;
+                document.getElementById('dairySugars').value = values.sugars;
+                document.getElementById('dairyAsh').value = values.ash;
+                document.getElementById('dairySalt').value = values.salt;
+                document.getElementById('dairyHydration').value = values.hydration;
+            }
+        }
+
+        function calculateDairyHydration() {
+            const protein = parseFloat(document.getElementById('dairyProtein').value) || 0;
+            const fat = parseFloat(document.getElementById('dairyFat').value) || 0;
+            const carbs = parseFloat(document.getElementById('dairyCarbs').value) || 0;
+            const ash = parseFloat(document.getElementById('dairyAsh').value) || 0;
+            const salt = parseFloat(document.getElementById('dairySalt').value) || 0;
+            const hydration = 100 - protein - fat - carbs - ash - salt;
+            document.getElementById('dairyHydration').value = hydration.toFixed(1);
+        }
+
+        function onSugarPresetChange() {
+            const preset = document.getElementById('sugarPreset').value;
+            if (preset === '0') { // Sugar
+                document.getElementById('sugarCarbs').value = 100;
+                document.getElementById('sugarSugars').value = 100;
+                document.getElementById('sugarHydration').value = 0;
+            } else if (preset === '1') { // Honey
+                document.getElementById('sugarCarbs').value = 82;
+                document.getElementById('sugarSugars').value = 82;
+                document.getElementById('sugarHydration').value = 18;
+            }
+        }
+
+        function calculateSugarHydration() {
+            const carbs = parseFloat(document.getElementById('sugarCarbs').value) || 0;
+            const hydration = 100 - carbs;
+            document.getElementById('sugarHydration').value = hydration.toFixed(1);
+        }
+
+        function calculateMiscHydration() {
+            const protein = parseFloat(document.getElementById('miscProtein').value) || 0;
+            const fat = parseFloat(document.getElementById('miscFat').value) || 0;
+            const carbs = parseFloat(document.getElementById('miscCarbs').value) || 0;
+            const ash = parseFloat(document.getElementById('miscAsh').value) || 0;
+            const salt = parseFloat(document.getElementById('miscSalt').value) || 0;
+            const hydration = 100 - protein - fat - carbs - ash - salt;
+            document.getElementById('miscHydration').value = hydration.toFixed(1);
+        }
+
+        function confirmAddIngredient() {
+            const name = document.getElementById('ingredientName').value.trim();
+            const type = document.getElementById('ingredientType').value;
+            
+            const weightType = document.querySelector('input[name="weightType"]:checked').value;
+            let weight = 0;
+            
+            if (weightType === 'weight') {
+                weight = parseFloat(document.getElementById('ingredientWeight').value);
+            } else {
+                // Calculate weight from percentage (will need total flour)
+                const percentage = parseFloat(document.getElementById('ingredientPercentage').value);
+                const totalFlour = ingredients
+                    .filter(ing => ing.type === 'flour')
+                    .reduce((sum, ing) => sum + ing.weight, 0);
+                weight = (percentage / 100) * totalFlour;
+            }
+
+            if (!name) {
+                alert('Please enter an ingredient name');
+                return;
+            }
+            if (isNaN(weight) || weight <= 0) {
+                alert('Please enter a valid weight or percentage');
+                return;
+            }
+            if (type === 'none') {
+                alert('Please select an ingredient type');
+                return;
+            }
+
+            const newIngredient = { name, weight, type };
+
+            // Add type-specific properties
+            if (type === 'starter') {
+                newIngredient.hydration = parseFloat(document.getElementById('ingredientHydration').value) || 100;
+                newIngredient.includeFlour = document.getElementById('ingredientIncludeFlour').checked;
+            } else if (type === 'dairy') {
+                newIngredient.hydration = parseFloat(document.getElementById('dairyHydration').value) || 0;
+                newIngredient.protein = parseFloat(document.getElementById('dairyProtein').value) || 0;
+                newIngredient.fat = parseFloat(document.getElementById('dairyFat').value) || 0;
+            } else if (type === 'sugar') {
+                newIngredient.hydration = parseFloat(document.getElementById('sugarHydration').value) || 0;
+            } else if (type === 'misc') {
+                newIngredient.hydration = parseFloat(document.getElementById('miscHydration').value) || 0;
+            }
+
+            ingredients.push(newIngredient);
+            renderIngredients();
+            calculate();
+            closeAddIngredientModal();
+        }
+
+        // Edit Ingredient Functions
+        let editingIngredientIndex = -1;
+
+        function openEditIngredientModal(index) {
+            editingIngredientIndex = index;
+            const ing = ingredients[index];
+            
+            // Populate form with existing values
+            document.getElementById('editIngredientName').value = ing.name;
+            document.getElementById('editIngredientWeight').value = ing.weight;
+            document.getElementById('editIngredientType').value = ing.type;
+            
+            // Set weight type to weight (simplify for now)
+            document.getElementById('editIngredientWeightRadio').checked = true;
+            document.getElementById('editIngredientWeight').disabled = false;
+            document.getElementById('editIngredientPercentage').disabled = true;
+            
+            // Hide all dynamic fields
+            document.querySelectorAll('#editIngredientModal .dynamic-field').forEach(el => el.style.display = 'none');
+            
+            // Show type-specific fields
+            if (ing.type === 'starter') {
+                document.getElementById('editStarterFields').style.display = 'block';
+                document.getElementById('editIngredientHydration').value = ing.hydration || 100;
+                document.getElementById('editIngredientIncludeFlour').checked = ing.includeFlour !== false;
+            }
+            
+            onEditIngredientTypeChange();
+            document.getElementById('editIngredientModal').style.display = 'block';
+        }
+
+        function closeEditIngredientModal() {
+            document.getElementById('editIngredientModal').style.display = 'none';
+            editingIngredientIndex = -1;
+        }
+
+        function onEditWeightTypeChange(type) {
+            const weightInput = document.getElementById('editIngredientWeight');
+            const percentageInput = document.getElementById('editIngredientPercentage');
+            
+            if (type === 'weight') {
+                weightInput.disabled = false;
+                percentageInput.disabled = true;
+            } else {
+                weightInput.disabled = true;
+                percentageInput.disabled = false;
+            }
+        }
+
+        function onEditIngredientTypeChange() {
+            const type = document.getElementById('editIngredientType').value;
+            document.querySelectorAll('#editIngredientModal .dynamic-field').forEach(el => el.style.display = 'none');
+
+            // Show relevant fields based on type
+            if (type === 'starter') {
+                document.getElementById('editStarterFields').style.display = 'block';
+            }
+
+            // Show percentage option for main ingredient types
+            const percentageGroup = document.getElementById('editPercentageGroup');
+            if (type === 'flour' || type === 'fluid' || type === 'starter' || type === 'salt' || type === 'yeast' || type === 'fat' || type === 'sugar') {
+                percentageGroup.style.display = 'block';
+            } else {
+                percentageGroup.style.display = 'none';
+            }
+        }
+
+        function confirmEditIngredient() {
+            const name = document.getElementById('editIngredientName').value.trim();
+            const type = document.getElementById('editIngredientType').value;
+            const weight = parseFloat(document.getElementById('editIngredientWeight').value);
+
+            if (!name) {
+                alert('Please enter an ingredient name');
+                return;
+            }
+            if (isNaN(weight) || weight <= 0) {
+                alert('Please enter a valid weight');
+                return;
+            }
+            if (type === 'none') {
+                alert('Please select an ingredient type');
+                return;
+            }
+
+            const updatedIngredient = { name, weight, type };
+
+            // Add type-specific properties
+            if (type === 'starter') {
+                updatedIngredient.hydration = parseFloat(document.getElementById('editIngredientHydration').value) || 100;
+                updatedIngredient.includeFlour = document.getElementById('editIngredientIncludeFlour').checked;
+            }
+
+            ingredients[editingIngredientIndex] = updatedIngredient;
+            renderIngredients();
+            calculate();
+            closeEditIngredientModal();
+        }
+
+        // Scale Ingredient Functions
+        let scalingIngredientIndex = -1;
+
+        function openScaleIngredientModal(index) {
+            scalingIngredientIndex = index;
+            const ing = ingredients[index];
+            
+            document.getElementById('scaleIngredientName').textContent = ing.name;
+            document.getElementById('scaleIngredientCurrentWeight').textContent = `${ing.weight}g`;
+            document.getElementById('scaleIngredientNewWeight').value = ing.weight;
+            document.getElementById('scaleIngredientFactor').textContent = '1.00x';
+            
+            // Add event listener for live scale factor calculation
+            document.getElementById('scaleIngredientNewWeight').oninput = function() {
+                const currentWeight = ingredients[scalingIngredientIndex].weight;
+                const newWeight = parseFloat(this.value) || 0;
+                const factor = newWeight / currentWeight;
+                document.getElementById('scaleIngredientFactor').textContent = factor.toFixed(2) + 'x';
+            };
+            
+            document.getElementById('scaleIngredientModal').style.display = 'block';
+        }
+
+        function closeScaleIngredientModal() {
+            document.getElementById('scaleIngredientModal').style.display = 'none';
+            scalingIngredientIndex = -1;
+        }
+
+        function confirmScaleIngredient() {
+            const currentWeight = ingredients[scalingIngredientIndex].weight;
+            const newWeight = parseFloat(document.getElementById('scaleIngredientNewWeight').value);
+            
+            if (isNaN(newWeight) || newWeight <= 0) {
+                alert('Please enter a valid weight');
+                return;
+            }
+            
+            const scaleFactor = newWeight / currentWeight;
+            
+            if (confirm(`Scale all ingredients by ${scaleFactor.toFixed(2)}x?`)) {
+                // Scale all ingredients
+                ingredients = ingredients.map(ing => ({
+                    ...ing,
+                    weight: ing.weight * scaleFactor
+                }));
+                
+                renderIngredients();
+                calculate();
+                closeScaleIngredientModal();
+            }
+        }
+
+        // Scale All Functions
+        function openScaleAllModal() {
+            if (ingredients.length === 0) {
+                alert('Please add ingredients before scaling.');
+                return;
+            }
+            
+            const currentTotal = ingredients.reduce((sum, ing) => sum + ing.weight, 0);
+            document.getElementById('scaleAllCurrentTotal').textContent = `${currentTotal.toFixed(1)}g`;
+            document.getElementById('scaleAllNewTotal').value = currentTotal.toFixed(1);
+            document.getElementById('scaleAllMultiplier').value = '1';
+            document.getElementById('scaleAllResultTotal').textContent = `${currentTotal.toFixed(1)}g`;
+            
+            // Add event listeners for live calculations
+            document.getElementById('scaleAllNewTotal').oninput = function() {
+                const currentTotal = ingredients.reduce((sum, ing) => sum + ing.weight, 0);
+                const newTotal = parseFloat(this.value) || 0;
+                const multiplier = newTotal / currentTotal;
+                document.getElementById('scaleAllMultiplier').value = multiplier.toFixed(2);
+                document.getElementById('scaleAllResultTotal').textContent = `${newTotal.toFixed(1)}g`;
+            };
+            
+            document.getElementById('scaleAllMultiplier').oninput = function() {
+                const currentTotal = ingredients.reduce((sum, ing) => sum + ing.weight, 0);
+                const multiplier = parseFloat(this.value) || 1;
+                const newTotal = currentTotal * multiplier;
+                document.getElementById('scaleAllNewTotal').value = newTotal.toFixed(1);
+                document.getElementById('scaleAllResultTotal').textContent = `${newTotal.toFixed(1)}g`;
+            };
+            
+            document.getElementById('scaleAllModal').style.display = 'block';
+        }
+
+        function closeScaleAllModal() {
+            document.getElementById('scaleAllModal').style.display = 'none';
+        }
+
+        function confirmScaleAll() {
+            const multiplier = parseFloat(document.getElementById('scaleAllMultiplier').value);
+            
+            if (isNaN(multiplier) || multiplier <= 0) {
+                alert('Please enter a valid multiplier');
+                return;
+            }
+            
+            // Scale all ingredients
+            ingredients = ingredients.map(ing => ({
+                ...ing,
+                weight: ing.weight * multiplier
+            }));
+            
+            renderIngredients();
+            calculate();
+            closeScaleAllModal();
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('addIngredientModal');
+            if (event.target === modal) {
+                closeAddIngredientModal();
+            }
+            const editModal = document.getElementById('editIngredientModal');
+            if (event.target === editModal) {
+                closeEditIngredientModal();
+            }
+            const scaleModal = document.getElementById('scaleIngredientModal');
+            if (event.target === scaleModal) {
+                closeScaleIngredientModal();
+            }
+            const scaleAllModal = document.getElementById('scaleAllModal');
+            if (event.target === scaleAllModal) {
+                closeScaleAllModal();
+            }
+            const loadModal = document.getElementById('loadRecipeModal');
+            if (event.target === editModal) {
+                closeEditIngredientModal();
+            }
+            const loadModal = document.getElementById('loadRecipeModal');
+            if (event.target === loadModal) {
+                closeLoadRecipeModal();
+            }
+        }
+
+        // Recipe Storage Functions (Server-side API)
+        async function saveRecipe() {
+            const recipeName = document.getElementById('recipeName').value || 'Untitled Recipe';
+            const totalWeight = document.getElementById('totalWeight').value;
+            const numLoaves = document.getElementById('numLoaves').value;
+
+            if (ingredients.length === 0) {
+                alert('Please add ingredients before saving.');
+                return;
+            }
+
+            const recipe = {
+                name: recipeName,
+                totalWeight: totalWeight,
+                numLoaves: numLoaves,
+                ingredients: ingredients
+            };
+
+            try {
+                const response = await fetch('/api/recipes');
+                const savedRecipes = await response.json();
+                const existing = savedRecipes.find(r => r.name === recipeName);
+                
+                if (existing) {
+                    if (confirm(`A recipe named "${recipeName}" already exists. Overwrite it?`)) {
+                        await fetch(`/api/recipes/${existing.id}`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(recipe)
+                        });
+                    } else {
+                        return;
+                    }
+                } else {
+                    await fetch('/api/recipes', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(recipe)
+                    });
+                }
+                
+                alert(`Recipe "${recipeName}" saved successfully!`);
+            } catch (err) {
+                console.error('Error saving recipe:', err);
+                alert('Failed to save recipe. Please try again.');
+            }
+        }
+
+        async function openLoadRecipeModal() {
+            try {
+                const response = await fetch('/api/recipes');
+                const savedRecipes = await response.json();
+                
+                if (savedRecipes.length === 0) {
+                    alert('No saved recipes found. Save a recipe first!');
+                    return;
+                }
+
+                renderSavedRecipes(savedRecipes);
+                document.getElementById('loadRecipeModal').style.display = 'block';
+            } catch (err) {
+                console.error('Error loading recipes:', err);
+                alert('Failed to load recipes. Please try again.');
+            }
+        }
+
+        function closeLoadRecipeModal() {
+            document.getElementById('loadRecipeModal').style.display = 'none';
+        }
+
+        function renderSavedRecipes(recipes) {
+            const container = document.getElementById('savedRecipesList');
+            
+            recipes.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            container.innerHTML = recipes.map((recipe) => {
+                const date = new Date(recipe.date);
+                const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                const ingredientCount = recipe.ingredients.length;
+                
+                return `
+                    <div class="saved-recipe-item">
+                        <div class="saved-recipe-info">
+                            <div class="saved-recipe-name">${recipe.name}</div>
+                            <div class="saved-recipe-meta">
+                                📅 ${formattedDate} | 
+                                🥖 ${recipe.numLoaves} loaf(s) | 
+                                ⚖️ ${recipe.totalWeight}g | 
+                                📝 ${ingredientCount} ingredient(s)
+                            </div>
+                        </div>
+                        <div class="saved-recipe-actions">
+                            <button onclick="loadRecipe('${recipe.id}')" class="btn-small">Load</button>
+                            <button onclick="deleteRecipe('${recipe.id}')" class="btn-danger btn-small">Delete</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function loadRecipe(id) {
+            try {
+                const response = await fetch(`/api/recipes/${id}`);
+                const recipe = await response.json();
+                
+                document.getElementById('recipeName').value = recipe.name;
+                document.getElementById('totalWeight').value = recipe.totalWeight;
+                document.getElementById('numLoaves').value = recipe.numLoaves;
+                ingredients = recipe.ingredients;
+                
+                renderIngredients();
+                calculate();
+                closeLoadRecipeModal();
+                
+                alert(`Recipe "${recipe.name}" loaded successfully!`);
+            } catch (err) {
+                console.error('Error loading recipe:', err);
+                alert('Failed to load recipe. Please try again.');
+            }
+        }
+
+        async function deleteRecipe(id) {
+            try {
+                const response = await fetch(`/api/recipes/${id}`);
+                const recipe = await response.json();
+                
+                if (confirm(`Are you sure you want to delete "${recipe.name}"?`)) {
+                    await fetch(`/api/recipes/${id}`, { method: 'DELETE' });
+                    
+                    const recipesResponse = await fetch('/api/recipes');
+                    const savedRecipes = await recipesResponse.json();
+                    
+                    if (savedRecipes.length === 0) {
+                        closeLoadRecipeModal();
+                    } else {
+                        renderSavedRecipes(savedRecipes);
+                    }
+                }
+            } catch (err) {
+                console.error('Error deleting recipe:', err);
+                alert('Failed to delete recipe. Please try again.');
+            }
+        }
+
+        async function exportRecipes() {
+            try {
+                window.location.href = '/api/recipes/export/all';
+            } catch (err) {
+                console.error('Error exporting recipes:', err);
+                alert('Failed to export recipes. Please try again.');
+            }
+        }
+
+        async function importRecipes() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'application/json';
+            input.onchange = async (e) => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = async (event) => {
+                    try {
+                        const importedRecipes = JSON.parse(event.target.result);
+                        
+                        const response = await fetch('/api/recipes/import', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(importedRecipes)
+                        });
+                        
+                        const result = await response.json();
+                        alert(`Successfully imported ${result.count} recipe(s)!`);
+                        await openLoadRecipeModal();
+                    } catch (err) {
+                        console.error('Error importing recipes:', err);
+                        alert('Error importing recipes. Please check the file format.');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        // Load recipe from URL parameters
+        function loadFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            
+            let hasParams = false;
+            
+            if (params.has('n')) {
+                document.getElementById('recipeName').value = decodeURIComponent(params.get('n'));
+                hasParams = true;
+            }
+            if (params.has('w')) {
+                document.getElementById('totalWeight').value = params.get('w');
+                hasParams = true;
+            }
+            if (params.has('l')) {
+                document.getElementById('numLoaves').value = params.get('l');
+                hasParams = true;
+            }
+            
+            // Load ingredients
+            const ingredientData = params.get('i');
+            if (ingredientData) {
+                try {
+                    ingredients = JSON.parse(decodeURIComponent(ingredientData));
+                    renderIngredients();
+                    calculate();
+                    return;
+                } catch (e) {
+                    console.error('Error parsing ingredients:', e);
+                }
+            }
+            
+            // If no URL params or no ingredients loaded, use default recipe
+            if (!hasParams || ingredients.length === 0) {
+                initializeDefaultRecipe();
+            }
+        }
+
+        // Add new ingredient
+        function addIngredient() {
+            openAddIngredientModal();
+        }
+
+        // Remove ingredient
+        function removeIngredient(index) {
+            ingredients.splice(index, 1);
+            renderIngredients();
+            calculate();
+        }
+
+        // Update ingredient
+        function updateIngredient(index, field, value) {
+            ingredients[index][field] = value;
+            if (field === 'weight') {
+                ingredients[index][field] = parseFloat(value) || 0;
+            }
+            if (field === 'hydration') {
+                ingredients[index][field] = parseFloat(value) || 100;
+            }
+        }
+
+        // Render ingredients
+        function renderIngredients() {
+            const container = document.getElementById('ingredientsContainer');
+            if (ingredients.length === 0) {
+                container.innerHTML = '<p style="color: #999; text-align: center; padding: 20px;">No ingredients added yet. Click "+ Add Ingredient" to start.</p>';
+                return;
+            }
+            
+            container.innerHTML = ingredients.map((ing, index) => {
+                const percentage = ing.percentage !== undefined ? `(${ing.percentage.toFixed(1)}%)` : '';
+                const typeName = ingredientTypes[ing.type] || ing.type;
+                let meta = '';
+                
+                if (ing.type === 'starter' && ing.hydration) {
+                    meta = `${ing.hydration}% hydration`;
+                }
+                
+                return `
+                    <div class="ingredient-item">
+                        <div class="ingredient-text">
+                            <span class="ingredient-weight">${ing.weight}g</span>
+                            <span class="ingredient-name">${ing.name}</span>
+                            <span class="ingredient-percentage">${percentage}</span>
+                            ${meta ? `<span class="ingredient-meta">[${meta}]</span>` : ''}
+                        </div>
+                        <div class="ingredient-actions">
+                            <button onclick="openScaleIngredientModal(${index})" class="btn-small btn-icon" title="Scale this ingredient">⚖️</button>
+                            <button onclick="openEditIngredientModal(${index})" class="btn-small btn-icon" title="Edit ingredient">✏️</button>
+                            <button onclick="removeIngredient(${index})" class="btn-danger btn-small btn-icon" title="Delete ingredient">🗑️</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Calculate baker's percentages and scaled weights
+        function calculate() {
+            const totalWeight = parseFloat(document.getElementById('totalWeight').value) || 0;
+            const numLoaves = parseInt(document.getElementById('numLoaves').value) || 1;
+
+            // Calculate total flour
+            let totalFlour = 0;
+            let totalWater = 0;
+
+            ingredients.forEach(ing => {
+                if (ing.type === 'flour') {
+                    totalFlour += ing.weight;
+                } else if (ing.type === 'fluid') {
+                    totalWater += ing.weight;
+                } else if (ing.type === 'starter' && ing.hydration) {
+                    // Starter contains flour and water
+                    const starterFlour = ing.weight / (1 + ing.hydration / 100);
+                    const starterWater = ing.weight - starterFlour;
+                    if (ing.includeFlour !== false) {
+                        totalFlour += starterFlour;
+                    }
+                    totalWater += starterWater;
+                } else if (ing.type === 'dairy' && ing.hydration) {
+                    totalWater += ing.weight * (ing.hydration / 100);
+                } else if (ing.type === 'egg') {
+                    totalWater += ing.weight * 0.75; // Eggs ~75% water
+                } else if (ing.type === 'sugar' && ing.hydration) {
+                    totalWater += ing.weight * (ing.hydration / 100);
+                } else if (ing.type === 'misc' && ing.hydration) {
+                    totalWater += ing.weight * (ing.hydration / 100);
+                }
+            });
+
+            // Calculate current total weight
+            const currentTotal = ingredients.reduce((sum, ing) => sum + ing.weight, 0);
+            const scaleFactor = totalWeight > 0 ? totalWeight / currentTotal : 1;
+
+            // Calculate baker's percentages and scaled weights
+            const results = ingredients.map(ing => {
+                let percentage = 0;
+                let flour = 0;
+                let water = 0;
+
+                if (ing.type === 'flour') {
+                    percentage = (ing.weight / totalFlour) * 100;
+                    flour = ing.weight * scaleFactor;
+                } else if (ing.type === 'fluid') {
+                    percentage = (ing.weight / totalFlour) * 100;
+                    water = ing.weight * scaleFactor;
+                } else if (ing.type === 'starter' && ing.hydration) {
+                    percentage = (ing.weight / totalFlour) * 100;
+                    const starterFlour = (ing.weight / (1 + ing.hydration / 100)) * scaleFactor;
+                    const starterWater = (ing.weight * scaleFactor) - starterFlour;
+                    if (ing.includeFlour !== false) {
+                        flour = starterFlour;
+                    }
+                    water = starterWater;
+                } else if (ing.type === 'dairy' && ing.hydration) {
+                    percentage = (ing.weight / totalFlour) * 100;
+                    water = ing.weight * scaleFactor * (ing.hydration / 100);
+                } else if (ing.type === 'egg') {
+                    percentage = (ing.weight / totalFlour) * 100;
+                    water = ing.weight * scaleFactor * 0.75;
+                } else if (ing.type === 'sugar' && ing.hydration) {
+                    percentage = (ing.weight / totalFlour) * 100;
+                    water = ing.weight * scaleFactor * (ing.hydration / 100);
+                } else if (ing.type === 'misc' && ing.hydration) {
+                    percentage = (ing.weight / totalFlour) * 100;
+                    water = ing.weight * scaleFactor * (ing.hydration / 100);
+                } else {
+                    percentage = (ing.weight / totalFlour) * 100;
+                }
+
+                return {
+                    name: ing.name,
+                    type: ingredientTypes[ing.type],
+                    originalWeight: ing.weight,
+                    scaledWeight: ing.weight * scaleFactor,
+                    perLoaf: (ing.weight * scaleFactor) / numLoaves,
+                    percentage: percentage,
+                    flour: flour,
+                    water: water
+                };
+            });
+
+            // Calculate totals
+            const totalScaledFlour = results.reduce((sum, r) => sum + r.flour, 0);
+            const totalScaledWater = results.reduce((sum, r) => sum + r.water, 0);
+            const hydration = totalScaledFlour > 0 ? (totalScaledWater / totalScaledFlour) * 100 : 0;
+
+            // Render results
+            renderResults(results, totalWeight, numLoaves, hydration, totalScaledFlour, totalScaledWater);
+        }
+
+        // Render results table
+        function renderResults(results, totalWeight, numLoaves, hydration, totalFlour, totalWater) {
+            const totalScaled = results.reduce((sum, r) => sum + r.scaledWeight, 0);
+            const weightPerLoaf = totalScaled / numLoaves;
+
+            const html = `
+                <div class="summary">
+                    <div class="summary-item">
+                        <span>Total Flour:</span>
+                        <strong>${totalFlour.toFixed(1)} g</strong>
+                    </div>
+                    <div class="summary-item">
+                        <span>Total Water:</span>
+                        <strong>${totalWater.toFixed(1)} g</strong>
+                    </div>
+                    <div class="summary-item">
+                        <span>Hydration:</span>
+                        <strong>${hydration.toFixed(1)}%</strong>
+                    </div>
+                    <div class="summary-item">
+                        <span>Total Dough Weight:</span>
+                        <strong>${totalScaled.toFixed(1)} g</strong>
+                    </div>
+                    <div class="summary-item">
+                        <span>Weight per Loaf:</span>
+                        <strong>${weightPerLoaf.toFixed(1)} g</strong>
+                    </div>
+                </div>
+
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th>Ingredient</th>
+                            <th>Type</th>
+                            <th>Original (g)</th>
+                            <th>Scaled (g)</th>
+                            <th>Per Loaf (g)</th>
+                            <th>Baker's %</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${results.map(r => `
+                            <tr>
+                                <td>${r.name}</td>
+                                <td>${r.type}</td>
+                                <td>${r.originalWeight.toFixed(1)}</td>
+                                <td>${r.scaledWeight.toFixed(1)}</td>
+                                <td>${r.perLoaf.toFixed(1)}</td>
+                                <td>${r.percentage.toFixed(1)}%</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+
+            document.getElementById('results').innerHTML = html;
+        }
+
+        // Share recipe via URL
+        function shareRecipe() {
+            const recipeName = document.getElementById('recipeName').value;
+            const totalWeight = document.getElementById('totalWeight').value;
+            const numLoaves = document.getElementById('numLoaves').value;
+            
+            const params = new URLSearchParams();
+            params.set('n', recipeName);
+            params.set('w', totalWeight);
+            params.set('l', numLoaves);
+            params.set('i', JSON.stringify(ingredients));
+            
+            const url = window.location.origin + window.location.pathname + '?' + params.toString();
+            
+            // Copy to clipboard
+            navigator.clipboard.writeText(url).then(() => {
+                alert('Recipe URL copied to clipboard! You can share this link with others.');
+            }).catch(() => {
+                prompt('Copy this URL to share your recipe:', url);
+            });
+        }
+
+        // Reset recipe
+        function resetRecipe() {
+            if (confirm('Are you sure you want to reset? This will clear all ingredients.')) {
+                ingredients = [];
+                document.getElementById('recipeName').value = 'My Bread Recipe';
+                document.getElementById('totalWeight').value = '1000';
+                document.getElementById('numLoaves').value = '2';
+                renderIngredients();
+                document.getElementById('results').innerHTML = '<p>Add ingredients and click Calculate to see results.</p>';
+            }
+        }
+
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            
+            // Check if we have ingredient data in URL
+            const ingredientData = params.get('i');
+            if (ingredientData) {
+                try {
+                    ingredients = JSON.parse(decodeURIComponent(ingredientData));
+                    
+                    if (params.has('n')) {
+                        document.getElementById('recipeName').value = decodeURIComponent(params.get('n'));
+                    }
+                    if (params.has('w')) {
+                        document.getElementById('totalWeight').value = params.get('w');
+                    }
+                    if (params.has('l')) {
+                        document.getElementById('numLoaves').value = params.get('l');
+                    }
+                    
+                    renderIngredients();
+                    calculate();
+                } catch (e) {
+                    console.error('Error parsing ingredients:', e);
+                    initializeDefaultRecipe();
+                }
+            } else {
+                // No URL params, load default recipe
+                console.log('No URL params found, loading default recipe...');
+                initializeDefaultRecipe();
+            }
+        });
+        
+        // Fallback: Also call after a short delay to ensure DOM is ready
+        setTimeout(() => {
+            if (ingredients.length === 0) {
+                console.log('Fallback: Initializing default recipe...');
+                initializeDefaultRecipe();
+            }
+        }, 100);
+    </script>
+
+    <!-- Add Ingredient Modal -->
+    <div id="addIngredientModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add Ingredient</h2>
+                <span class="close" onclick="closeAddIngredientModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <!-- Weight -->
+                <div class="modal-row">
+                    <label>Weight</label>
+                    <div>
+                        <div class="weight-option">
+                            <input type="radio" name="weightType" id="ingredientWeightRadio" value="weight" checked onchange="onWeightTypeChange('weight')">
+                            <input type="number" id="ingredientWeight" placeholder="0" step="0.1"> g
+                        </div>
+                        <div class="weight-option" id="percentageGroup" style="display: none;">
+                            <input type="radio" name="weightType" id="ingredientPercentageRadio" value="percentage" onchange="onWeightTypeChange('percentage')">
+                            <input type="number" id="ingredientPercentage" placeholder="0" step="0.1" disabled> %
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Name -->
+                <div class="modal-row">
+                    <label for="ingredientName">Name *</label>
+                    <input type="text" id="ingredientName" placeholder="Ingredient">
+                </div>
+
+                <!-- Type -->
+                <div class="modal-row">
+                    <label for="ingredientType">Type *</label>
+                    <select id="ingredientType" onchange="onIngredientTypeChange()">
+                        <option value="none">Select type...</option>
+                        <option value="flour">Flour</option>
+                        <option value="fluid">Fluid</option>
+                        <option value="starter">Starter</option>
+                        <option value="salt">Salt</option>
+                        <option value="yeast">Yeast</option>
+                        <option disabled="disabled">──────────</option>
+                        <option value="fat">Fat</option>
+                        <option value="sugar">Sugar</option>
+                        <option value="dairy">Dairy</option>
+                        <option value="egg">Egg</option>
+                        <option value="misc">Miscellaneous</option>
+                        <option value="extra">Other extras</option>
+                    </select>
+                </div>
+
+                <!-- Starter Fields -->
+                <div id="starterFields" class="dynamic-field">
+                    <div class="modal-row">
+                        <label for="ingredientHydration">Hydration</label>
+                        <div>
+                            <input type="number" id="ingredientHydration" value="100" step="1"> %
+                        </div>
+                    </div>
+                    <div class="modal-row">
+                        <label></label>
+                        <div>
+                            <input type="checkbox" id="ingredientIncludeFlour" checked>
+                            <label for="ingredientIncludeFlour">Include flour in Baker's Percentage</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dairy Fields -->
+                <div id="dairyFields" class="dynamic-field">
+                    <div class="modal-row">
+                        <label for="dairyPreset">Preset</label>
+                        <select id="dairyPreset" onchange="onDairyPresetChange()">
+                            <option value="0">Skim milk (0.1%)</option>
+                            <option value="1">Skim milk (0.3%)</option>
+                            <option value="2">Skim milk (0.5%)</option>
+                            <option value="3">Low fat milk (1.0%)</option>
+                            <option value="15">Reduced fat milk (2.0%)</option>
+                            <option value="4">Whole milk (3.5%)</option>
+                            <option disabled="disabled">──────────</option>
+                            <option value="5">Cream (9%)</option>
+                            <option value="6">Cream (12%)</option>
+                            <option value="7">Cream (20%)</option>
+                            <option value="8">Cream (33%)</option>
+                            <option value="9">Cream (38%)</option>
+                            <option value="10">Cream (50%)</option>
+                            <option disabled="disabled">──────────</option>
+                            <option value="11">Yoghurt (3.6%)</option>
+                            <option value="12">Yoghurt (0.1%)</option>
+                            <option disabled="disabled">──────────</option>
+                            <option value="13">Butter, salted</option>
+                            <option value="14">Butter, unsalted</option>
+                            <option disabled="disabled">──────────</option>
+                            <option value="-1">Custom</option>
+                        </select>
+                    </div>
+                    <div class="modal-row">
+                        <label for="dairyProtein">Protein</label>
+                        <div><input type="number" id="dairyProtein" step="0.1"> %</div>
+                    </div>
+                    <div class="modal-row">
+                        <label for="dairyFat">Fat</label>
+                        <div><input type="number" id="dairyFat" step="0.1"> %</div>
+                    </div>
+                    <div class="modal-row">
+                        <label for="dairyCarbs">Carbohydrates</label>
+                        <div><input type="number" id="dairyCarbs" step="0.1"> %</div>
+                    </div>
+                    <div class="modal-row">
+                        <label for="dairySugars">Sugars</label>
+                        <div><input type="number" id="dairySugars" step="0.1"> %</div>
+                    </div>
+                    <div class="modal-row">
+                        <label for="dairyAsh">Ash</label>
+                        <div><input type="number" id="dairyAsh" step="0.1"> %</div>
+                    </div>
+                    <div class="modal-row">
+                        <label for="dairySalt">Salt</label>
+                        <div><input type="number" id="dairySalt" step="0.1"> %</div>
+                    </div>
+                    <div class="modal-row">
+                        <label for="dairyHydration">Hydration</label>
+                        <div>
+                            <input type="number" id="dairyHydration" step="0.1"> %
+                            <button onclick="calculateDairyHydration()" class="btn-small-inline" type="button">Calc</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Egg Fields -->
+                <div id="eggFields" class="dynamic-field">
+                    <div class="modal-row">
+                        <label for="eggPreset">Preset</label>
+                        <select id="eggPreset">
+                            <option value="0">Egg, whole</option>
+                            <option value="1">Egg, yolk</option>
+                            <option value="2">Egg, white</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Sugar Fields -->
+                <div id="sugarFields" class="dynamic-field">
+                    <div class="modal-row">
+                        <label for="sugarPreset">Preset</label>
+                        <select id="sugarPreset" onchange="onSugarPresetChange()">
+                            <option value="0">Sugar</option>
+                            <option value="1">Honey</option>
+                            <option disabled="disabled">──────────</option>
+                            <option value="-1">Custom</option>
+                        </select>
+                    </div>
+                    <div class="modal-row">
+                        <label for="sugarCarbs">Carbohydrates</label>
+                        <div><input type="number" id="sugarCarbs" step="0.1"> %</div>
+                    </div>
+                    <div class="modal-row">
+                        <label for="sugarSugars">Sugars</label>
+                        <div><input type="number" id="sugarSugars" step="0.1"> %</div>
+                    </div>
+                    <div class="modal-row">
+                        <label for="sugarHydration">Hydration</label>
+                        <div>
+                            <input type="number" id="sugarHydration" step="0.1"> %
+                            <button onclick="calculateSugarHydration()" class="btn-small-inline" type="button">Calc</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Misc Fields -->
+                <div id="miscFields" class="dynamic-field">
+                    <div class="modal-row">
+                        <label for="miscPreset">Preset</label>
+                        <select id="miscPreset">
+                            <option value="-1">Custom</option>
+                        </select>
+                    </div>
+                    <div class="modal-row">
+                        <label for="miscProtein">Protein</label>
+                        <div><input type="number" id="miscProtein" step="0.1"> %</div>
+                    </div>
+                    <div class="modal-row">
+                        <label for="miscFat">Fat</label>
+                        <div><input type="number" id="miscFat" step="0.1"> %</div>
+                    </div>
+                    <div class="modal-row">
+                        <label for="miscCarbs">Carbohydrates</label>
+                        <div><input type="number" id="miscCarbs" step="0.1"> %</div>
+                    </div>
+                    <div class="modal-row">
+                        <label for="miscSugars">Sugars</label>
+                        <div><input type="number" id="miscSugars" step="0.1"> %</div>
+                    </div>
+                    <div class="modal-row">
+                        <label for="miscAsh">Ash</label>
+                        <div><input type="number" id="miscAsh" step="0.1"> %</div>
+                    </div>
+                    <div class="modal-row">
+                        <label for="miscSalt">Salt</label>
+                        <div><input type="number" id="miscSalt" step="0.1"> %</div>
+                    </div>
+                    <div class="modal-row">
+                        <label for="miscHydration">Hydration</label>
+                        <div>
+                            <input type="number" id="miscHydration" step="0.1"> %
+                            <button onclick="calculateMiscHydration()" class="btn-small-inline" type="button">Calc</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeAddIngredientModal()" class="btn-danger">Cancel</button>
+                <button onclick="confirmAddIngredient()" class="btn-success">Add Ingredient</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scale Ingredient Modal -->
+    <div id="scaleIngredientModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>⚖️ Scale Ingredient</h2>
+                <span class="close" onclick="closeScaleIngredientModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="info-box">
+                    <p><strong>How it works:</strong> Enter a new weight for this ingredient. All other ingredients will be scaled proportionally to maintain the same recipe balance.</p>
+                </div>
+                <div class="modal-row">
+                    <label>Ingredient</label>
+                    <div id="scaleIngredientName" style="font-weight: 600;"></div>
+                </div>
+                <div class="modal-row">
+                    <label>Current Weight</label>
+                    <div id="scaleIngredientCurrentWeight" style="font-weight: 600; color: #667eea;"></div>
+                </div>
+                <div class="modal-row">
+                    <label for="scaleIngredientNewWeight">New Weight (g)</label>
+                    <input type="number" id="scaleIngredientNewWeight" placeholder="0" step="0.1">
+                </div>
+                <div class="modal-row">
+                    <label>Scale Factor</label>
+                    <div id="scaleIngredientFactor" style="font-weight: 600; color: #28a745;">-</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeScaleIngredientModal()" class="btn-danger">Cancel</button>
+                <button onclick="confirmScaleIngredient()" class="btn-success">Scale Recipe</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scale All Modal -->
+    <div id="scaleAllModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>⚖️ Scale Entire Recipe</h2>
+                <span class="close" onclick="closeScaleAllModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="info-box">
+                    <p><strong>Scale by total weight or multiplier:</strong> All ingredients will be scaled proportionally.</p>
+                </div>
+                <div class="modal-row">
+                    <label>Current Total</label>
+                    <div id="scaleAllCurrentTotal" style="font-weight: 600; color: #667eea;"></div>
+                </div>
+                <div class="modal-row">
+                    <label for="scaleAllNewTotal">New Total Weight (g)</label>
+                    <input type="number" id="scaleAllNewTotal" placeholder="0" step="0.1">
+                </div>
+                <div style="text-align: center; margin: 15px 0; color: #999;">— OR —</div>
+                <div class="modal-row">
+                    <label for="scaleAllMultiplier">Multiplier</label>
+                    <input type="number" id="scaleAllMultiplier" placeholder="1.0" step="0.1" value="1">
+                </div>
+                <div class="modal-row">
+                    <label>Result</label>
+                    <div id="scaleAllResultTotal" style="font-weight: 600; color: #28a745;">-</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeScaleAllModal()" class="btn-danger">Cancel</button>
+                <button onclick="confirmScaleAll()" class="btn-success">Scale Recipe</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Ingredient Modal -->
+    <div id="editIngredientModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit Ingredient</h2>
+                <span class="close" onclick="closeEditIngredientModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <!-- Weight -->
+                <div class="modal-row">
+                    <label>Weight</label>
+                    <div>
+                        <div class="weight-option">
+                            <input type="radio" name="editWeightType" id="editIngredientWeightRadio" value="weight" checked onchange="onEditWeightTypeChange('weight')">
+                            <input type="number" id="editIngredientWeight" placeholder="0" step="0.1"> g
+                        </div>
+                        <div class="weight-option" id="editPercentageGroup" style="display: none;">
+                            <input type="radio" name="editWeightType" id="editIngredientPercentageRadio" value="percentage" onchange="onEditWeightTypeChange('percentage')">
+                            <input type="number" id="editIngredientPercentage" placeholder="0" step="0.1" disabled> %
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Name -->
+                <div class="modal-row">
+                    <label for="editIngredientName">Name *</label>
+                    <input type="text" id="editIngredientName" placeholder="Ingredient">
+                </div>
+
+                <!-- Type -->
+                <div class="modal-row">
+                    <label for="editIngredientType">Type *</label>
+                    <select id="editIngredientType" onchange="onEditIngredientTypeChange()">
+                        <option value="none">Select type...</option>
+                        <option value="flour">Flour</option>
+                        <option value="fluid">Fluid</option>
+                        <option value="starter">Starter</option>
+                        <option value="salt">Salt</option>
+                        <option value="yeast">Yeast</option>
+                        <option disabled="disabled">──────────</option>
+                        <option value="fat">Fat</option>
+                        <option value="sugar">Sugar</option>
+                        <option value="dairy">Dairy</option>
+                        <option value="egg">Egg</option>
+                        <option value="misc">Miscellaneous</option>
+                        <option value="extra">Other extras</option>
+                    </select>
+                </div>
+
+                <!-- Starter Fields -->
+                <div id="editStarterFields" class="dynamic-field">
+                    <div class="modal-row">
+                        <label for="editIngredientHydration">Hydration</label>
+                        <div>
+                            <input type="number" id="editIngredientHydration" value="100" step="1"> %
+                        </div>
+                    </div>
+                    <div class="modal-row">
+                        <label></label>
+                        <div>
+                            <input type="checkbox" id="editIngredientIncludeFlour" checked>
+                            <label for="editIngredientIncludeFlour">Include flour in Baker's Percentage</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Note: Other dynamic fields (dairy, egg, sugar, misc) would be duplicated here if needed -->
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeEditIngredientModal()" class="btn-danger">Cancel</button>
+                <button onclick="confirmEditIngredient()" class="btn-success">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load Recipe Modal -->
+    <div id="loadRecipeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📂 Load Saved Recipe</h2>
+                <span class="close" onclick="closeLoadRecipeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="export-import-buttons">
+                    <button onclick="exportRecipes()" class="btn-small">📥 Export All</button>
+                    <button onclick="importRecipes()" class="btn-small">📤 Import</button>
+                </div>
+                <div class="recipes-list-container">
+                    <div id="savedRecipesList"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeLoadRecipeModal()">Close</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

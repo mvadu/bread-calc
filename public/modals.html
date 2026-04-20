@@ -1,0 +1,381 @@
+    <!-- Add Ingredient Modal -->
+    <div id="addIngredientModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add Ingredient</h2>
+                <span class="close" onclick="closeAddIngredientModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <!-- Weight -->
+                <div class="modal-row">
+                    <label>Weight</label>
+                    <div>
+                        <div class="weight-option">
+                            <input type="radio" name="weightType" id="ingredientWeightRadio" value="weight" checked onchange="onWeightTypeChange('weight')">
+                            <input type="number" id="ingredientWeight" placeholder="0" step="0.1"> g
+                        </div>
+                        <div class="weight-option" id="percentageGroup" style="display: none;">
+                            <input type="radio" name="weightType" id="ingredientPercentageRadio" value="percentage" onchange="onWeightTypeChange('percentage')">
+                            <input type="number" id="ingredientPercentage" placeholder="0" step="0.1" disabled> %
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Name -->
+                <div class="modal-row">
+                    <label for="ingredientName">Name *</label>
+                    <input type="text" id="ingredientName" placeholder="Ingredient">
+                </div>
+
+                <!-- Type -->
+                <div class="modal-row">
+                    <label for="ingredientType">Type *</label>
+                    <select id="ingredientType" onchange="onIngredientTypeChange()">
+                        <option value="none">Select type...</option>
+                        <option value="flour">Flour</option>
+                        <option value="fluid">Fluid</option>
+                        <option value="starter">Starter</option>
+                        <option value="salt">Salt</option>
+                        <option value="yeast">Yeast</option>
+                        <option disabled="disabled">──────────</option>
+                        <option value="fat">Fat</option>
+                        <option value="sugar">Sugar</option>
+                        <option value="dairy">Dairy</option>
+                        <option value="egg">Egg</option>
+                        <option value="misc">Miscellaneous</option>
+                        <option value="extra">Other extras</option>
+                    </select>
+                </div>
+
+                <!-- Starter Fields -->
+                <div id="starterFields" class="dynamic-field">
+                    <div class="modal-row">
+                        <label for="ingredientHydration">Hydration</label>
+                        <div>
+                            <input type="number" id="ingredientHydration" value="100" step="1"> %
+                        </div>
+                    </div>
+                    <div class="modal-row">
+                        <label></label>
+                        <div>
+                            <input type="checkbox" id="ingredientIncludeFlour" checked>
+                            <label for="ingredientIncludeFlour">Include flour in Baker's Percentage</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dairy Fields -->
+                <div id="dairyFields" class="dynamic-field">
+                    <div class="modal-row">
+                        <label for="dairyPreset">Preset</label>
+                        <select id="dairyPreset" onchange="onDairyPresetChange()">
+                            <option value="0">Skim milk (0.1%)</option>
+                            <option value="1">Skim milk (0.3%)</option>
+                            <option value="2">Skim milk (0.5%)</option>
+                            <option value="3">Low fat milk (1.0%)</option>
+                            <option value="15">Reduced fat milk (2.0%)</option>
+                            <option value="4">Whole milk (3.5%)</option>
+                            <option disabled="disabled">──────────</option>
+                            <option value="5">Cream (9%)</option>
+                            <option value="6">Cream (12%)</option>
+                            <option value="7">Cream (20%)</option>
+                            <option value="8">Cream (33%)</option>
+                            <option value="9">Cream (38%)</option>
+                            <option value="10">Cream (50%)</option>
+                            <option disabled="disabled">──────────</option>
+                            <option value="11">Yoghurt (3.6%)</option>
+                            <option value="12">Yoghurt (0.1%)</option>
+                            <option disabled="disabled">──────────</option>
+                            <option value="13">Butter, salted</option>
+                            <option value="14">Butter, unsalted</option>
+                            <option disabled="disabled">──────────</option>
+                            <option value="-1">Custom</option>
+                        </select>
+                    </div>
+                    <div class="modal-row">
+                        <label for="dairyProtein">Protein</label>
+                        <div><input type="number" id="dairyProtein" step="0.1"> %</div>
+                    </div>
+                    <div class="modal-row">
+                        <label for="dairyFat">Fat</label>
+                        <div><input type="number" id="dairyFat" step="0.1"> %</div>
+                    </div>
+                    <div class="modal-row">
+                        <label for="dairyCarbs">Carbohydrates</label>
+                        <div><input type="number" id="dairyCarbs" step="0.1"> %</div>
+                    </div>
+                    <div class="modal-row">
+                        <label for="dairySugars">Sugars</label>
+                        <div><input type="number" id="dairySugars" step="0.1"> %</div>
+                    </div>
+                    <div class="modal-row">
+                        <label for="dairyAsh">Ash</label>
+                        <div><input type="number" id="dairyAsh" step="0.1"> %</div>
+                    </div>
+                    <div class="modal-row">
+                        <label for="dairySalt">Salt</label>
+                        <div><input type="number" id="dairySalt" step="0.1"> %</div>
+                    </div>
+                    <div class="modal-row">
+                        <label for="dairyHydration">Hydration</label>
+                        <div>
+                            <input type="number" id="dairyHydration" step="0.1"> %
+                            <button onclick="calculateDairyHydration()" class="btn-small-inline" type="button">Calc</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Egg Fields -->
+                <div id="eggFields" class="dynamic-field">
+                    <div class="modal-row">
+                        <label for="eggPreset">Preset</label>
+                        <select id="eggPreset">
+                            <option value="0">Egg, whole</option>
+                            <option value="1">Egg, yolk</option>
+                            <option value="2">Egg, white</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Sugar Fields -->
+                <div id="sugarFields" class="dynamic-field">
+                    <div class="modal-row">
+                        <label for="sugarPreset">Preset</label>
+                        <select id="sugarPreset" onchange="onSugarPresetChange()">
+                            <option value="0">Sugar</option>
+                            <option value="1">Honey</option>
+                            <option disabled="disabled">──────────</option>
+                            <option value="-1">Custom</option>
+                        </select>
+                    </div>
+                    <div class="modal-row">
+                        <label for="sugarCarbs">Carbohydrates</label>
+                        <div><input type="number" id="sugarCarbs" step="0.1"> %</div>
+                    </div>
+                    <div class="modal-row">
+                        <label for="sugarSugars">Sugars</label>
+                        <div><input type="number" id="sugarSugars" step="0.1"> %</div>
+                    </div>
+                    <div class="modal-row">
+                        <label for="sugarHydration">Hydration</label>
+                        <div>
+                            <input type="number" id="sugarHydration" step="0.1"> %
+                            <button onclick="calculateSugarHydration()" class="btn-small-inline" type="button">Calc</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Misc Fields -->
+                <div id="miscFields" class="dynamic-field">
+                    <div class="modal-row">
+                        <label for="miscPreset">Preset</label>
+                        <select id="miscPreset">
+                            <option value="-1">Custom</option>
+                        </select>
+                    </div>
+                    <div class="modal-row">
+                        <label for="miscProtein">Protein</label>
+                        <div><input type="number" id="miscProtein" step="0.1"> %</div>
+                    </div>
+                    <div class="modal-row">
+                        <label for="miscFat">Fat</label>
+                        <div><input type="number" id="miscFat" step="0.1"> %</div>
+                    </div>
+                    <div class="modal-row">
+                        <label for="miscCarbs">Carbohydrates</label>
+                        <div><input type="number" id="miscCarbs" step="0.1"> %</div>
+                    </div>
+                    <div class="modal-row">
+                        <label for="miscSugars">Sugars</label>
+                        <div><input type="number" id="miscSugars" step="0.1"> %</div>
+                    </div>
+                    <div class="modal-row">
+                        <label for="miscAsh">Ash</label>
+                        <div><input type="number" id="miscAsh" step="0.1"> %</div>
+                    </div>
+                    <div class="modal-row">
+                        <label for="miscSalt">Salt</label>
+                        <div><input type="number" id="miscSalt" step="0.1"> %</div>
+                    </div>
+                    <div class="modal-row">
+                        <label for="miscHydration">Hydration</label>
+                        <div>
+                            <input type="number" id="miscHydration" step="0.1"> %
+                            <button onclick="calculateMiscHydration()" class="btn-small-inline" type="button">Calc</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeAddIngredientModal()" class="btn-danger">Cancel</button>
+                <button onclick="confirmAddIngredient()" class="btn-success">Add Ingredient</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scale Ingredient Modal -->
+    <div id="scaleIngredientModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>⚖️ Scale Ingredient</h2>
+                <span class="close" onclick="closeScaleIngredientModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="info-box">
+                    <p><strong>How it works:</strong> Enter a new weight for this ingredient. All other ingredients will be scaled proportionally to maintain the same recipe balance.</p>
+                </div>
+                <div class="modal-row">
+                    <label>Ingredient</label>
+                    <div id="scaleIngredientName" style="font-weight: 600;"></div>
+                </div>
+                <div class="modal-row">
+                    <label>Current Weight</label>
+                    <div id="scaleIngredientCurrentWeight" style="font-weight: 600; color: #667eea;"></div>
+                </div>
+                <div class="modal-row">
+                    <label for="scaleIngredientNewWeight">New Weight (g)</label>
+                    <input type="number" id="scaleIngredientNewWeight" placeholder="0" step="0.1">
+                </div>
+                <div class="modal-row">
+                    <label>Scale Factor</label>
+                    <div id="scaleIngredientFactor" style="font-weight: 600; color: #28a745;">-</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeScaleIngredientModal()" class="btn-danger">Cancel</button>
+                <button onclick="confirmScaleIngredient()" class="btn-success">Scale Recipe</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scale All Modal -->
+    <div id="scaleAllModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>⚖️ Scale Entire Recipe</h2>
+                <span class="close" onclick="closeScaleAllModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="info-box">
+                    <p><strong>Scale by total weight or multiplier:</strong> All ingredients will be scaled proportionally.</p>
+                </div>
+                <div class="modal-row">
+                    <label>Current Total</label>
+                    <div id="scaleAllCurrentTotal" style="font-weight: 600; color: #667eea;"></div>
+                </div>
+                <div class="modal-row">
+                    <label for="scaleAllNewTotal">New Total Weight (g)</label>
+                    <input type="number" id="scaleAllNewTotal" placeholder="0" step="0.1">
+                </div>
+                <div style="text-align: center; margin: 15px 0; color: #999;">— OR —</div>
+                <div class="modal-row">
+                    <label for="scaleAllMultiplier">Multiplier</label>
+                    <input type="number" id="scaleAllMultiplier" placeholder="1.0" step="0.1" value="1">
+                </div>
+                <div class="modal-row">
+                    <label>Result</label>
+                    <div id="scaleAllResultTotal" style="font-weight: 600; color: #28a745;">-</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeScaleAllModal()" class="btn-danger">Cancel</button>
+                <button onclick="confirmScaleAll()" class="btn-success">Scale Recipe</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Ingredient Modal -->
+    <div id="editIngredientModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit Ingredient</h2>
+                <span class="close" onclick="closeEditIngredientModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <!-- Weight -->
+                <div class="modal-row">
+                    <label>Weight</label>
+                    <div>
+                        <div class="weight-option">
+                            <input type="radio" name="editWeightType" id="editIngredientWeightRadio" value="weight" checked onchange="onEditWeightTypeChange('weight')">
+                            <input type="number" id="editIngredientWeight" placeholder="0" step="0.1"> g
+                        </div>
+                        <div class="weight-option" id="editPercentageGroup" style="display: none;">
+                            <input type="radio" name="editWeightType" id="editIngredientPercentageRadio" value="percentage" onchange="onEditWeightTypeChange('percentage')">
+                            <input type="number" id="editIngredientPercentage" placeholder="0" step="0.1" disabled> %
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Name -->
+                <div class="modal-row">
+                    <label for="editIngredientName">Name *</label>
+                    <input type="text" id="editIngredientName" placeholder="Ingredient">
+                </div>
+
+                <!-- Type -->
+                <div class="modal-row">
+                    <label for="editIngredientType">Type *</label>
+                    <select id="editIngredientType" onchange="onEditIngredientTypeChange()">
+                        <option value="none">Select type...</option>
+                        <option value="flour">Flour</option>
+                        <option value="fluid">Fluid</option>
+                        <option value="starter">Starter</option>
+                        <option value="salt">Salt</option>
+                        <option value="yeast">Yeast</option>
+                        <option disabled="disabled">──────────</option>
+                        <option value="fat">Fat</option>
+                        <option value="sugar">Sugar</option>
+                        <option value="dairy">Dairy</option>
+                        <option value="egg">Egg</option>
+                        <option value="misc">Miscellaneous</option>
+                        <option value="extra">Other extras</option>
+                    </select>
+                </div>
+
+                <!-- Starter Fields -->
+                <div id="editStarterFields" class="dynamic-field">
+                    <div class="modal-row">
+                        <label for="editIngredientHydration">Hydration</label>
+                        <div>
+                            <input type="number" id="editIngredientHydration" value="100" step="1"> %
+                        </div>
+                    </div>
+                    <div class="modal-row">
+                        <label></label>
+                        <div>
+                            <input type="checkbox" id="editIngredientIncludeFlour" checked>
+                            <label for="editIngredientIncludeFlour">Include flour in Baker's Percentage</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Note: Other dynamic fields (dairy, egg, sugar, misc) would be duplicated here if needed -->
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeEditIngredientModal()" class="btn-danger">Cancel</button>
+                <button onclick="confirmEditIngredient()" class="btn-success">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load Recipe Modal -->
+    <div id="loadRecipeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📂 Load Saved Recipe</h2>
+                <span class="close" onclick="closeLoadRecipeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="export-import-buttons">
+                    <button onclick="exportRecipes()" class="btn-small">📥 Export All</button>
+                    <button onclick="importRecipes()" class="btn-small">📤 Import</button>
+                </div>
+                <div class="recipes-list-container">
+                    <div id="savedRecipesList"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeLoadRecipeModal()">Close</button>
+            </div>
+        </div>
