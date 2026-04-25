@@ -4,8 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bread Calculator</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="styles.css">    <script>
+        // Apply dark class before paint to prevent flash
+        (function() {
+            const t = localStorage.getItem('theme');
+            if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches))
+                document.documentElement.className = 'dark';
+        })();
+    </script></head>
 <body>
     <!-- Toolbar -->
     <div class="toolbar">
@@ -20,6 +27,8 @@
         <button onclick="openLoadRecipeModal()">Load</button>
         <button onclick="saveRecipe()">Save</button>
         <button onclick="saveAsRecipe()">Save As</button>
+        <div class="separator"></div>
+        <button onclick="toggleDarkMode()" id="themeToggleBtn" title="Toggle dark mode">🌙</button>
     </div>
 
     <!-- Main content -->
@@ -39,7 +48,11 @@
             </div>
             <div class="meta">
                 <label for="numLoaves">Quantity:</label>
-                <input type="number" id="numLoaves" value="2" min="1" onchange="scaleByServings()">
+                <input type="number" id="numLoaves" value="2" min="1" oninput="onServingsInput()">
+                <span id="servingsActions" style="display:none;gap:4px;align-items:center;" class="inline-servings-actions">
+                    <button onclick="confirmScaleServings()" class="btn-pill btn-pill-blue" title="Scale all ingredient weights to match new quantity">Scale</button>
+                    <button onclick="confirmSetServings()" class="btn-pill btn-pill-grey" title="Just update the count, don't change weights">Set</button>
+                </span>
             </div>
         </div>
 
@@ -157,22 +170,21 @@
                     <div class="modal-row">
                         <label for="dairyPreset">Preset</label>
                         <select id="dairyPreset" onchange="onDairyPresetChange()">
-                            <option value="0">Skim milk (0.1%)</option>
-                            <option value="1">Skim milk (0.3%)</option>
-                            <option value="2">Skim milk (0.5%)</option>
-                            <option value="3">Low fat milk (1.0%)</option>
-                            <option value="15">Reduced fat milk (2.0%)</option>
-                            <option value="4">Whole milk (3.5%)</option>
+                            <option value="0">Skim milk (0%)</option>
+                            <option value="1">1% milk</option>
+                            <option value="2">2% milk</option>
+                            <option value="3">Whole milk (3.25%)</option>
+                            <option value="4">Buttermilk (low-fat)</option>
                             <option disabled>──────────</option>
-                            <option value="5">Cream (9%)</option>
-                            <option value="6">Cream (12%)</option>
-                            <option value="7">Cream (20%)</option>
-                            <option value="8">Cream (33%)</option>
-                            <option value="9">Cream (38%)</option>
-                            <option value="10">Cream (50%)</option>
+                            <option value="5">Half &amp; Half (~10%)</option>
+                            <option value="6">Light cream (18%)</option>
+                            <option value="7">Whipping cream (33%)</option>
+                            <option value="8">Heavy whipping cream (36%)</option>
                             <option disabled>──────────</option>
-                            <option value="11">Yoghurt (3.6%)</option>
-                            <option value="12">Yoghurt (0.1%)</option>
+                            <option value="9">Sour cream (14%)</option>
+                            <option value="10">Plain yogurt, whole</option>
+                            <option value="11">Greek yogurt (2%)</option>
+                            <option value="12">Cream cheese (33%)</option>
                             <option disabled>──────────</option>
                             <option value="13">Butter, salted</option>
                             <option value="14">Butter, unsalted</option>

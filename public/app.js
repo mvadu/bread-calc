@@ -122,16 +122,40 @@ function moveSectionDown(sIdx) {
 
 let previousServings = 2;
 
-function scaleByServings() {
-    const newServings = parseInt(document.getElementById('numLoaves').value) || 1;
-    if (getAllIngredients().length === 0 || newServings === previousServings) return;
+function onServingsInput() {
+    const newVal = parseInt(document.getElementById('numLoaves').value) || 1;
+    const actions = document.getElementById('servingsActions');
+    actions.style.display = newVal !== previousServings ? 'flex' : 'none';
+}
 
-    const scaleFactor = newServings / previousServings;
-    sections.forEach(sec => {
-        sec.ingredients = sec.ingredients.map(ing => ({ ...ing, weight: ing.weight * scaleFactor }));
-    });
+function confirmScaleServings() {
+    const newServings = parseInt(document.getElementById('numLoaves').value) || 1;
+    document.getElementById('servingsActions').style.display = 'none';
+    if (getAllIngredients().length === 0 || newServings === previousServings) return;
+    applyScaleFactor(newServings / previousServings);
     previousServings = newServings;
     renderAll();
+}
+
+function confirmSetServings() {
+    const newServings = parseInt(document.getElementById('numLoaves').value) || 1;
+    previousServings = newServings;
+    document.getElementById('servingsActions').style.display = 'none';
+    calculate(); // re-render totals so per-serving weight updates
+}
+
+function scaleByServings() {
+    // kept for backward compat (called from editNumLoaves inline edit)
+    confirmScaleServings();
+}
+
+function applyScaleFactor(sf) {
+    sections.forEach(sec => {
+        sec.ingredients = sec.ingredients.map(ing => ({ ...ing, weight: ing.weight * sf }));
+        if (sec.steps) {
+            sec.steps = sec.steps.map(st => st.weight != null ? { ...st, weight: st.weight * sf } : { ...st });
+        }
+    });
 }
 
 // ========== Bowl weight ==========
@@ -208,26 +232,29 @@ function onIngredientTypeChange() {
     pg.style.display = ['flour','fluid','starter','salt','yeast','fat','sugar'].includes(type) ? 'block' : 'none';
 }
 
-// Dairy presets
+// Dairy presets (North American)
 function onDairyPresetChange() {
     const preset = document.getElementById('dairyPreset').value;
     const presets = {
-        '0': {protein:3.4,fat:0.1,carbs:5,sugars:5,ash:0.7,salt:0,hydration:90.8},
-        '1': {protein:3.4,fat:0.3,carbs:4.8,sugars:4.8,ash:0.7,salt:0,hydration:90.8},
-        '2': {protein:3.3,fat:0.5,carbs:4.9,sugars:4.9,ash:0.7,salt:0,hydration:90.6},
-        '3': {protein:3.4,fat:1,carbs:4.8,sugars:4.8,ash:0.7,salt:0,hydration:90.1},
-        '15':{protein:3.3,fat:2,carbs:4.8,sugars:4.8,ash:0.7,salt:0,hydration:89.2},
-        '4': {protein:3.2,fat:3.5,carbs:4.8,sugars:4.8,ash:0.7,salt:0,hydration:87.8},
-        '5': {protein:2.8,fat:9,carbs:4.3,sugars:4.3,ash:0.6,salt:0,hydration:83.3},
-        '6': {protein:2.7,fat:12,carbs:4.1,sugars:4.1,ash:0.6,salt:0,hydration:80.6},
-        '7': {protein:2.3,fat:20,carbs:3.4,sugars:3.4,ash:0.5,salt:0,hydration:73.8},
-        '8': {protein:2.1,fat:33,carbs:3.1,sugars:3.1,ash:0.5,salt:0,hydration:61.3},
-        '9': {protein:2,fat:38,carbs:2.9,sugars:2.9,ash:0.4,salt:0,hydration:56.7},
-        '10':{protein:1.7,fat:50,carbs:2.8,sugars:2.8,ash:0.4,salt:0,hydration:45.1},
-        '11':{protein:4.3,fat:3.6,carbs:5,sugars:5,ash:0.7,salt:0,hydration:86.4},
-        '12':{protein:4.3,fat:0.1,carbs:5.7,sugars:5.7,ash:0.8,salt:0,hydration:89.1},
-        '13':{protein:0.6,fat:81,carbs:0.7,sugars:0.7,ash:3.5,salt:1.5,hydration:14.2},
-        '14':{protein:0.9,fat:82,carbs:0.1,sugars:0.1,ash:2,salt:0,hydration:15},
+        // Milk
+        '0': {protein:3.4, fat:0.1, carbs:5.0, sugars:5.0, ash:0.7, salt:0,   hydration:90.8}, // Skim milk
+        '1': {protein:3.4, fat:1.0, carbs:4.8, sugars:4.8, ash:0.7, salt:0,   hydration:90.1}, // 1% milk
+        '2': {protein:3.3, fat:2.0, carbs:4.8, sugars:4.8, ash:0.7, salt:0,   hydration:89.2}, // 2% milk
+        '3': {protein:3.2, fat:3.3, carbs:4.8, sugars:4.8, ash:0.7, salt:0,   hydration:88.0}, // Whole milk 3.25%
+        '4': {protein:3.3, fat:0.9, carbs:4.8, sugars:4.8, ash:0.7, salt:0.1, hydration:90.2}, // Buttermilk
+        // Cream
+        '5': {protein:2.8, fat:11.5,carbs:4.3, sugars:4.3, ash:0.6, salt:0,   hydration:80.8}, // Half & Half
+        '6': {protein:2.5, fat:18.0,carbs:3.9, sugars:3.9, ash:0.5, salt:0,   hydration:75.1}, // Light cream 18%
+        '7': {protein:2.2, fat:33.0,carbs:3.2, sugars:3.2, ash:0.4, salt:0,   hydration:61.2}, // Whipping cream 33%
+        '8': {protein:2.0, fat:36.0,carbs:2.9, sugars:2.9, ash:0.4, salt:0,   hydration:58.7}, // Heavy whipping cream 36%
+        // Cultured
+        '9': {protein:2.5, fat:14.0,carbs:3.7, sugars:3.7, ash:0.6, salt:0,   hydration:79.2}, // Sour cream
+        '10':{protein:5.0, fat:3.3, carbs:5.7, sugars:5.7, ash:0.7, salt:0,   hydration:85.3}, // Plain yogurt, whole
+        '11':{protein:10.0,fat:2.0, carbs:3.6, sugars:3.6, ash:0.7, salt:0,   hydration:83.7}, // Greek yogurt 2%
+        '12':{protein:6.2, fat:33.0,carbs:3.4, sugars:3.4, ash:1.2, salt:0.7, hydration:55.5}, // Cream cheese
+        // Butter
+        '13':{protein:0.9, fat:81.0,carbs:0.1, sugars:0.1, ash:2.1, salt:1.6, hydration:14.3}, // Butter, salted
+        '14':{protein:0.9, fat:82.0,carbs:0.1, sugars:0.1, ash:2.0, salt:0,   hydration:15.0}, // Butter, unsalted
     };
     if (preset !== '-1' && presets[preset]) {
         const v = presets[preset];
@@ -383,7 +410,7 @@ function confirmScaleIngredient() {
     if (isNaN(nw)||nw<=0) { alert('Please enter a valid weight'); return; }
     const sf = nw/cw;
     if (confirm(`Scale all ingredients by ${sf.toFixed(2)}x?`)) {
-        sections.forEach(sec => { sec.ingredients = sec.ingredients.map(i=>({...i,weight:i.weight*sf})); });
+        applyScaleFactor(sf);
         renderAll();
         closeScaleIngredientModal();
     }
@@ -421,7 +448,7 @@ function closeScaleAllModal() { document.getElementById('scaleAllModal').style.d
 function confirmScaleAll() {
     const m = parseFloat(document.getElementById('scaleAllMultiplier').value);
     if (isNaN(m)||m<=0) { alert('Please enter a valid multiplier'); return; }
-    sections.forEach(sec => { sec.ingredients = sec.ingredients.map(i=>({...i,weight:i.weight*m})); });
+    applyScaleFactor(m);
     renderAll();
     closeScaleAllModal();
 }
@@ -648,7 +675,7 @@ function editTotalWeight() {
     const target = parseFloat(n);
     if (!target||target<=0) return;
     const sf = target/ct;
-    sections.forEach(sec => { sec.ingredients = sec.ingredients.map(i=>({...i,weight:i.weight*sf})); });
+    applyScaleFactor(sf);
     renderAll();
 }
 
@@ -658,6 +685,33 @@ function addIngredient(sIdx) { openAddIngredientModal(sIdx); }
 
 function removeIngredient(sIdx, iIdx) {
     sections[sIdx].ingredients.splice(iIdx, 1);
+    renderAll();
+}
+
+// ========== Steps ==========
+
+function addStep(sIdx) {
+    const text = prompt('Step description (e.g. "Reduce filling to target weight"):');
+    if (!text || !text.trim()) return;
+    const weightStr = prompt('Target weight in grams (leave blank if none):');
+    const weight = weightStr && weightStr.trim() !== '' ? parseFloat(weightStr) : null;
+    if (!sections[sIdx].steps) sections[sIdx].steps = [];
+    sections[sIdx].steps.push({ text: text.trim(), weight: (weight > 0 ? weight : null) });
+    renderAll();
+}
+
+function editStep(sIdx, stIdx) {
+    const st = sections[sIdx].steps[stIdx];
+    const text = prompt('Step description:', st.text);
+    if (text === null) return;
+    const weightStr = prompt('Target weight in grams (leave blank for none):', st.weight != null ? st.weight.toFixed(1) : '');
+    const weight = weightStr && weightStr.trim() !== '' ? parseFloat(weightStr) : null;
+    sections[sIdx].steps[stIdx] = { text: text.trim() || st.text, weight: (weight > 0 ? weight : null) };
+    renderAll();
+}
+
+function removeStep(sIdx, stIdx) {
+    sections[sIdx].steps.splice(stIdx, 1);
     renderAll();
 }
 
@@ -716,6 +770,23 @@ function renderSections() {
             tableHtml = '<p style="color:#999;text-align:center;padding:20px;">No ingredients yet.</p>';
         }
 
+        // Steps
+        const steps = sec.steps || [];
+        let stepsHtml = '';
+        if (steps.length > 0) {
+            const stepRows = steps.map((st, stIdx) => `
+                <li class="step-item">
+                    <span class="step-num">${stIdx + 1}.</span>
+                    <span class="step-text">${st.text}</span>
+                    ${st.weight != null ? `<span class="step-weight">${st.weight.toFixed(1)}g</span>` : ''}
+                    <span class="step-actions">
+                        <button onclick="editStep(${sIdx},${stIdx})" title="Edit">✏️</button>
+                        <button class="btn-danger" onclick="removeStep(${sIdx},${stIdx})" title="Delete">🗑️</button>
+                    </span>
+                </li>`).join('');
+            stepsHtml = `<div class="steps-container"><div class="steps-header">📋 Prep steps</div><ol class="steps-list">${stepRows}</ol></div>`;
+        }
+
         // Section move buttons
         const moveUp = sIdx > 0 ? `<button onclick="moveSectionUp(${sIdx})" title="Move up" style="background:none;border:none;cursor:pointer;color:#888;font-size:0.85em;">\u25B2</button>` : '';
         const moveDown = sIdx < sections.length-1 ? `<button onclick="moveSectionDown(${sIdx})" title="Move down" style="background:none;border:none;cursor:pointer;color:#888;font-size:0.85em;">\u25BC</button>` : '';
@@ -732,9 +803,10 @@ function renderSections() {
                     ${sections.length > 1 ? `<button onclick="removeSection(${sIdx})" title="Remove section" style="background:none;border:none;cursor:pointer;color:#e74c3c;font-size:1em;">\u2716</button>` : ''}
                 </span>
             </div>
-            <div class="section-body">${tableHtml}</div>
+            <div class="section-body">${tableHtml}${stepsHtml}</div>
             <div class="section-footer">
                 <button onclick="addIngredient(${sIdx})">+ Add ingredient</button>
+                <button onclick="addStep(${sIdx})">+ Add step</button>
             </div>
         </div>`;
     }).join('');
@@ -776,6 +848,15 @@ function renderResults(totalWeight, numLoaves, hydration, totalFlour, totalWater
     const saltPct = totalFlour>0 ? ((totalSalt/totalFlour)*100).toFixed(1) : '0';
     const pff = allIngs.filter(i=>i.type==='starter'&&i.includeFlour!==false&&i.hydration).reduce((s,i)=>s+i.weight/(1+i.hydration/100),0);
 
+    // Total fat: fat-type (pure fat), dairy fat%, egg ~10%, misc fat%
+    let totalFat = 0;
+    allIngs.forEach(ing => {
+        if (ing.type==='fat') totalFat += ing.weight;
+        else if ((ing.type==='dairy'||ing.type==='misc') && ing.fat) totalFat += ing.weight * (ing.fat/100);
+        else if (ing.type==='egg') totalFat += ing.weight * 0.10;
+    });
+    const fatPct = totalFlour>0 ? ((totalFat/totalFlour)*100).toFixed(1) : '0';
+
     document.getElementById('results').innerHTML = `
         <div class="totals-grid">
             <div class="total-item"><div class="total-label">Dough Weight</div><div class="total-value editable-value" onclick="editTotalWeight()">${totalWeight.toFixed(0)}g</div><div class="total-sub">${wpl.toFixed(0)}g per serving</div></div>
@@ -784,6 +865,7 @@ function renderResults(totalWeight, numLoaves, hydration, totalFlour, totalWater
             <div class="total-item"><div class="total-label">Pre-fermented Flour</div><div class="total-value">${pff.toFixed(0)}g</div></div>
             <div class="total-item"><div class="total-label">Total Fluid</div><div class="total-value">${totalWater.toFixed(0)}g</div></div>
             <div class="total-item"><div class="total-label">Salt</div><div class="total-value">${totalSalt.toFixed(0)}g <span class="total-sub">(${saltPct}%)</span></div></div>
+            <div class="total-item"><div class="total-label">Fat</div><div class="total-value">${totalFat.toFixed(0)}g <span class="total-sub">(${fatPct}%)</span></div></div>
             <div class="total-item"><div class="total-label">Dough Hydration</div><div class="total-value">${hydration.toFixed(1)}%</div></div>
         </div>`;
     document.getElementById('totalWeight').value = Math.round(totalWeight);
@@ -825,6 +907,25 @@ window.addEventListener('DOMContentLoaded', () => {
     const initialName = document.getElementById('recipeName').value;
     document.getElementById('recipeNameText').textContent = initialName;
     previousServings = parseInt(document.getElementById('numLoaves').value)||2;
+    applyInitialTheme();
 });
 
 setTimeout(() => { if (getAllIngredients().length===0) initializeDefaultRecipe(); }, 100);
+
+// ============================================================
+// DARK MODE
+// ============================================================
+function toggleDarkMode() {
+    const isDark = document.body.classList.toggle('dark');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    document.getElementById('themeToggleBtn').textContent = isDark ? '☀️' : '🌙';
+}
+
+function applyInitialTheme() {
+    const saved = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const isDark = saved === 'dark' || (!saved && prefersDark);
+    document.body.classList.toggle('dark', isDark);
+    const btn = document.getElementById('themeToggleBtn');
+    if (btn) btn.textContent = isDark ? '☀️' : '🌙';
+}

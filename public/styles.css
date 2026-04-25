@@ -7,13 +7,56 @@
     box-sizing: border-box;
 }
 
+/* ---- CSS Variables (light default) ---- */
+:root {
+    --bg: #f5f5f5;
+    --fg: #333;
+    --fg-muted: #666;
+    --fg-faint: #999;
+    --fg-faintest: #bbb;
+    --border: #e0e0e0;
+    --border-light: #f0f0f0;
+    --surface: #fff;
+    --surface-alt: #f9f9f9;
+    --surface-header: #fafafa;
+    --input-border: #ccc;
+    --heading-color: #222;
+    --label-color: #555;
+    --info-bg: #fffbe6;
+    --info-border: #f0c929;
+    --info-color: #7a6c14;
+    --notes-focus-bg: #fafbff;
+}
+
+body.dark,
+html.dark body {
+    --bg: #1a1a2e;
+    --fg: #dde1e7;
+    --fg-muted: #aaa;
+    --fg-faint: #777;
+    --fg-faintest: #4a4a6a;
+    --border: #2e2e4a;
+    --border-light: #252540;
+    --surface: #16213e;
+    --surface-alt: #1e2a45;
+    --surface-header: #0f3460;
+    --input-border: #3a3a5c;
+    --heading-color: #f0f0f0;
+    --label-color: #bbb;
+    --info-bg: #2a2410;
+    --info-border: #a08020;
+    --info-color: #d4b84a;
+    --notes-focus-bg: #1a1a35;
+}
+
 /* ---- Base ---- */
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
         Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    background: #f5f5f5;
-    color: #333;
+    background: var(--bg);
+    color: var(--fg);
     min-height: 100vh;
+    transition: background 0.2s, color 0.2s;
 }
 
 /* ---- Top toolbar ---- */
@@ -88,13 +131,13 @@ body {
     align-items: baseline;
     gap: 8px 20px;
     margin-bottom: 24px;
-    border-bottom: 2px solid #ddd;
+    border-bottom: 2px solid var(--border);
     padding-bottom: 12px;
 }
 
 .recipe-header .meta {
     font-size: 0.95em;
-    color: #666;
+    color: var(--fg-muted);
     display: flex;
     align-items: center;
     gap: 6px;
@@ -103,17 +146,19 @@ body {
 .recipe-header .meta label {
     font-weight: 400;
     font-size: 0.9em;
-    color: #888;
+    color: var(--fg-faint);
     margin: 0;
 }
 
 .recipe-header .meta input {
     width: 52px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--input-border);
     border-radius: 4px;
     padding: 3px 6px;
     font-size: 0.95em;
     text-align: center;
+    background: var(--surface);
+    color: var(--fg);
 }
 
 .recipe-header .meta input:focus {
@@ -139,7 +184,7 @@ body {
     margin: 0;
     font-size: 1.6em;
     font-weight: 700;
-    color: #222;
+    color: var(--heading-color);
     border-bottom: 1px dashed transparent;
     transition: border-color 0.2s;
 }
@@ -174,12 +219,14 @@ body {
     border-radius: 4px;
     padding: 4px 8px;
     width: 260px;
+    background: var(--surface);
+    color: var(--fg);
 }
 
 /* ---- Section ---- */
 .section {
-    background: #fff;
-    border: 1px solid #e0e0e0;
+    background: var(--surface);
+    border: 1px solid var(--border);
     border-radius: 6px;
     margin-bottom: 20px;
     overflow: hidden;
@@ -190,14 +237,14 @@ body {
     align-items: center;
     justify-content: space-between;
     padding: 10px 16px;
-    background: #fafafa;
-    border-bottom: 1px solid #e0e0e0;
+    background: var(--surface-header);
+    border-bottom: 1px solid var(--border);
 }
 
 .section-header h2 {
     font-size: 1.1em;
     font-weight: 600;
-    color: #333;
+    color: var(--fg);
     margin: 0;
 }
 
@@ -209,12 +256,12 @@ body {
 
 .section-header .section-weight {
     font-size: 0.9em;
-    color: #888;
+    color: var(--fg-faint);
 }
 
 .bowl-weight {
     font-size: 0.9em;
-    color: #aaa;
+    color: var(--fg-faint);
     font-variant-numeric: tabular-nums;
     transition: color 0.2s, font-weight 0.2s;
 }
@@ -238,12 +285,12 @@ body {
     font-size: 0.78em;
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    color: #999;
+    color: var(--fg-faint);
     font-weight: 600;
     text-align: left;
     padding: 6px 12px;
-    border-bottom: 1px solid #eee;
-    background: #fafafa;
+    border-bottom: 1px solid var(--border-light);
+    background: var(--surface-header);
 }
 
 .ingredient-table th.num {
@@ -252,7 +299,7 @@ body {
 
 .ingredient-table td {
     padding: 8px 12px;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid var(--border-light);
     font-size: 0.95em;
     vertical-align: middle;
 }
@@ -268,7 +315,7 @@ body {
 }
 
 .ingredient-table tr:hover {
-    background: #f9f9f9;
+    background: var(--surface-alt);
 }
 
 .ingredient-table .ing-name {
@@ -276,12 +323,12 @@ body {
 }
 
 .ingredient-table .ing-type {
-    color: #888;
+    color: var(--fg-muted);
     font-size: 0.85em;
 }
 
 .ingredient-table .ing-meta {
-    color: #aaa;
+    color: var(--fg-faint);
     font-size: 0.82em;
 }
 
@@ -296,12 +343,12 @@ body {
     cursor: pointer;
     font-size: 1em;
     padding: 2px 5px;
-    color: #999;
+    color: var(--fg-faint);
     transition: color 0.15s;
 }
 
 .ingredient-table .ing-actions button:hover {
-    color: #333;
+    color: var(--fg);
 }
 
 .ingredient-table .ing-actions button.btn-danger:hover {
@@ -332,8 +379,8 @@ body {
     display: flex;
     gap: 8px;
     padding: 10px 16px;
-    border-top: 1px solid #e0e0e0;
-    background: #fafafa;
+    border-top: 1px solid var(--border);
+    background: var(--surface-header);
 }
 
 .section-footer button {
@@ -353,8 +400,8 @@ body {
 
 /* ---- Totals panel ---- */
 .totals-section {
-    background: #fff;
-    border: 1px solid #e0e0e0;
+    background: var(--surface);
+    border: 1px solid var(--border);
     border-radius: 6px;
     margin-bottom: 20px;
     overflow: hidden;
@@ -372,8 +419,8 @@ body {
 
 .totals-grid .total-item {
     padding: 12px 16px;
-    border-bottom: 1px solid #f0f0f0;
-    border-right: 1px solid #f0f0f0;
+    border-bottom: 1px solid var(--border-light);
+    border-right: 1px solid var(--border-light);
 }
 
 .totals-grid .total-item:last-child {
@@ -384,14 +431,14 @@ body {
     font-size: 0.78em;
     text-transform: uppercase;
     letter-spacing: 0.03em;
-    color: #999;
+    color: var(--fg-faint);
     margin-bottom: 2px;
 }
 
 .total-item .total-value {
     font-size: 1.15em;
     font-weight: 600;
-    color: #222;
+    color: var(--heading-color);
     font-variant-numeric: tabular-nums;
     cursor: pointer;
 }
@@ -402,7 +449,7 @@ body {
 
 .total-item .total-sub {
     font-size: 0.82em;
-    color: #aaa;
+    color: var(--fg-faint);
 }
 
 @media (max-width: 600px) {
@@ -413,8 +460,8 @@ body {
 
 /* ---- Notes section ---- */
 .notes-section {
-    background: #fff;
-    border: 1px solid #e0e0e0;
+    background: var(--surface);
+    border: 1px solid var(--border);
     border-radius: 6px;
     margin-bottom: 20px;
     overflow: hidden;
@@ -432,18 +479,19 @@ body {
     font-family: inherit;
     resize: vertical;
     min-height: 80px;
-    color: #333;
+    color: var(--fg);
+    background: var(--surface);
 }
 
 .notes-section textarea:focus {
     outline: none;
-    background: #fafbff;
+    background: var(--notes-focus-bg);
 }
 
 .notes-section .notes-hint {
     padding: 4px 16px 8px;
     font-size: 0.78em;
-    color: #bbb;
+    color: var(--fg-faintest);
 }
 
 /* ---- Extra recipe fields (baking temp/time) ---- */
@@ -462,7 +510,7 @@ body {
 
 .recipe-extras label {
     font-size: 0.88em;
-    color: #888;
+    color: var(--fg-muted);
     font-weight: 400;
     margin: 0;
     white-space: nowrap;
@@ -470,11 +518,13 @@ body {
 
 .recipe-extras input {
     width: 70px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--input-border);
     border-radius: 4px;
     padding: 4px 6px;
     font-size: 0.92em;
     text-align: center;
+    background: var(--surface);
+    color: var(--fg);
 }
 
 .recipe-extras input:focus {
@@ -528,12 +578,41 @@ button {
     cursor: pointer;
     font-size: 1em;
     padding: 2px 4px;
-    color: #999;
+    color: var(--fg-faint);
     transition: color 0.15s;
 }
 
 .btn-icon:hover {
-    color: #333;
+    color: var(--fg);
+}
+
+.inline-servings-actions {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+
+.btn-pill {
+    padding: 2px 9px;
+    font-size: 0.78em;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: opacity 0.15s;
+}
+
+.btn-pill:hover { opacity: 0.85; }
+
+.btn-pill-blue {
+    background: #3498db;
+    color: #fff;
+}
+
+.btn-pill-grey {
+    background: var(--border);
+    color: var(--fg);
 }
 
 /* ---- Input base ---- */
@@ -548,7 +627,7 @@ select {
 label {
     display: block;
     margin-bottom: 4px;
-    color: #555;
+    color: var(--label-color);
     font-weight: 500;
     font-size: 0.9em;
 }
@@ -572,7 +651,8 @@ label {
 }
 
 .modal-content {
-    background: #fff;
+    background: var(--surface);
+    color: var(--fg);
     margin: 5vh auto;
     border-radius: 8px;
     width: 92%;
@@ -623,7 +703,7 @@ label {
 
 .modal-footer {
     padding: 14px 20px;
-    border-top: 1px solid #e0e0e0;
+    border-top: 1px solid var(--border);
     display: flex;
     justify-content: flex-end;
     gap: 8px;
@@ -640,7 +720,7 @@ label {
 .modal-row label {
     padding-top: 6px;
     font-size: 0.9em;
-    color: #555;
+    color: var(--label-color);
     font-weight: 500;
     margin: 0;
 }
@@ -650,8 +730,10 @@ label {
 .modal-row select {
     width: 100%;
     padding: 8px 10px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--input-border);
     border-radius: 4px;
+    background: var(--bg);
+    color: var(--fg);
 }
 
 .modal-row input:focus,
@@ -713,26 +795,26 @@ select option[disabled] {
     padding: 4px 10px;
     font-size: 0.82em;
     margin-left: 6px;
-    background: #eee;
-    border: 1px solid #ccc;
+    background: var(--surface-header);
+    border: 1px solid var(--input-border);
     border-radius: 4px;
     cursor: pointer;
-    color: #555;
+    color: var(--fg);
 }
 
 .btn-small-inline:hover {
-    background: #ddd;
+    background: var(--border);
 }
 
 /* ---- Info box ---- */
 .info-box {
-    background: #fffbe6;
-    border-left: 3px solid #f0c929;
+    background: var(--info-bg);
+    border-left: 3px solid var(--info-border);
     padding: 12px 14px;
     margin-bottom: 16px;
     border-radius: 3px;
     font-size: 0.9em;
-    color: #7a6c14;
+    color: var(--info-color);
     line-height: 1.5;
 }
 
@@ -746,7 +828,7 @@ select option[disabled] {
 
 /* ---- Saved recipes list ---- */
 .saved-recipe-item {
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--border);
     border-radius: 6px;
     padding: 12px 14px;
     margin-bottom: 10px;
@@ -768,7 +850,7 @@ select option[disabled] {
 .saved-recipe-name {
     font-size: 1.05em;
     font-weight: 600;
-    color: #222;
+    color: var(--heading-color);
     margin-bottom: 2px;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -777,7 +859,7 @@ select option[disabled] {
 
 .saved-recipe-meta {
     font-size: 0.82em;
-    color: #888;
+    color: var(--fg-muted);
 }
 
 .saved-recipe-actions {
@@ -797,7 +879,7 @@ select option[disabled] {
     gap: 8px;
     margin-bottom: 12px;
     padding-bottom: 12px;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid var(--border);
 }
 
 @media (max-width: 600px) {
@@ -824,11 +906,88 @@ select option[disabled] {
     }
 }
 
+/* ---- Prep Steps ---- */
+.steps-container {
+    border-top: 1px solid var(--border-light);
+    padding: 10px 16px 6px;
+    background: var(--surface);
+}
+
+.steps-header {
+    font-size: 0.78em;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--fg-faint);
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.steps-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.step-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 0;
+    border-bottom: 1px dashed var(--border-light);
+    font-size: 0.9em;
+}
+
+.step-item:last-child {
+    border-bottom: none;
+}
+
+.step-num {
+    color: var(--fg-faint);
+    font-size: 0.85em;
+    flex-shrink: 0;
+    min-width: 16px;
+}
+
+.step-text {
+    flex: 1;
+    color: var(--fg);
+}
+
+.step-weight {
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: #3498db;
+    white-space: nowrap;
+    background: rgba(52,152,219,0.1);
+    padding: 1px 6px;
+    border-radius: 10px;
+    font-size: 0.88em;
+}
+
+.step-actions {
+    display: flex;
+    gap: 2px;
+    flex-shrink: 0;
+}
+
+.step-actions button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9em;
+    padding: 2px 4px;
+    color: var(--fg-faint);
+    transition: color 0.15s;
+}
+
+.step-actions button:hover { color: var(--fg); }
+.step-actions button.btn-danger:hover { color: #e74c3c; }
+
 /* ---- Footer ---- */
 .app-footer {
     text-align: center;
     padding: 20px;
-    color: #bbb;
+    color: var(--fg-faintest);
     font-size: 0.82em;
 }
 
@@ -856,6 +1015,8 @@ select option[disabled] {
     padding: 2px 6px;
     font-size: 0.95em;
     text-align: center;
+    background: var(--surface);
+    color: var(--fg);
 }
 
 /* ---- Hidden helper ---- */
@@ -875,21 +1036,21 @@ select option[disabled] {
     font-size: 0.78em;
     text-transform: uppercase;
     letter-spacing: 0.03em;
-    color: #999;
+    color: var(--fg-faint);
     font-weight: 600;
     text-align: left;
     padding: 8px 12px;
-    border-bottom: 2px solid #e0e0e0;
-    background: #fafafa;
+    border-bottom: 2px solid var(--border);
+    background: var(--surface-header);
 }
 
 .results-table td {
     padding: 8px 12px;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid var(--border-light);
 }
 
 .results-table tr:hover {
-    background: #f9f9f9;
+    background: var(--surface-alt);
 }
 
 @media (max-width: 600px) {
